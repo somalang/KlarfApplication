@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36414.22 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KlarfApplication", "KlarfApplication.csproj", "{5430413F-3E29-46F8-8DF5-9EC97915ED1D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "솔루션 항목", "솔루션 항목", "{2A3A057F-5D22-31FD-628C-DF5EF75AEF1E}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5430413F-3E29-46F8-8DF5-9EC97915ED1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5430413F-3E29-46F8-8DF5-9EC97915ED1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5430413F-3E29-46F8-8DF5-9EC97915ED1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5430413F-3E29-46F8-8DF5-9EC97915ED1D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {83C68C29-6AA3-44EF-AF8C-7C2B79A66505}
+	EndGlobalSection
+EndGlobal
