@@ -2,8 +2,9 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="WPF Klarf Review Tool" 
-        Height="800" Width="1400"
-        WindowStartupLocation="CenterScreen">
+        Height="900" Width="1600"
+        WindowStartupLocation="CenterScreen"
+        Background="#FF1E1E1E">
 
     <Window.Resources>
         <!-- 스타일 정의 -->
@@ -24,7 +25,21 @@
             <Setter Property="Margin" Value="2"/>
             <Setter Property="Width" Value="35"/>
             <Setter Property="Height" Value="35"/>
-            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+
+        <Style x:Key="InfoLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="LightGray"/>
+            <Setter Property="Margin" Value="0,2"/>
+            <Setter Property="FontSize" Value="11"/>
+        </Style>
+
+        <Style x:Key="InfoValueStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Margin" Value="10,2"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
     </Window.Resources>
 
@@ -32,27 +47,94 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- 메뉴바 -->
-        <Menu Grid.Row="0">
-            <MenuItem Header="File">
-                <MenuItem Header="Open..." Command="{Binding OpenFileCommand}"/>
+        <Menu Grid.Row="0" Background="#FF2D2D30" Foreground="White">
+            <MenuItem Header="File" Foreground="White">
+                <MenuItem Header="Open Klarf File..." 
+                          Command="{Binding OpenKlarfCommand}"
+                          InputGestureText="Ctrl+O"/>
+                <MenuItem Header="Open Image Folder..." 
+                          Command="{Binding OpenImageFolderCommand}"/>
                 <Separator/>
-                <MenuItem Header="Exit" Command="{Binding ExitCommand}"/>
+                <MenuItem Header="Recent Files">
+                    <MenuItem Header="Sample_001.klf"/>
+                    <MenuItem Header="Sample_002.klf"/>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Exit" 
+                          Command="{Binding ExitCommand}"
+                          InputGestureText="Alt+F4"/>
             </MenuItem>
-            <MenuItem Header="View">
-                <MenuItem Header="Refresh" Command="{Binding RefreshCommand}"/>
+
+            <MenuItem Header="View" Foreground="White">
+                <MenuItem Header="Refresh" 
+                          Command="{Binding RefreshCommand}"
+                          InputGestureText="F5"/>
+                <Separator/>
+                <MenuItem Header="Zoom In" 
+                          Command="{Binding ZoomInCommand}"
+                          InputGestureText="Ctrl++"/>
+                <MenuItem Header="Zoom Out" 
+                          Command="{Binding ZoomOutCommand}"
+                          InputGestureText="Ctrl+-"/>
+                <MenuItem Header="Fit to Window" 
+                          Command="{Binding FitToWindowCommand}"
+                          InputGestureText="Ctrl+0"/>
+                <Separator/>
+                <MenuItem Header="Show Grid" 
+                          IsCheckable="True" 
+                          IsChecked="{Binding ShowGrid}"/>
+                <MenuItem Header="Show Defect Labels" 
+                          IsCheckable="True" 
+                          IsChecked="{Binding ShowDefectLabels}"/>
             </MenuItem>
-            <MenuItem Header="Settings">
-                <MenuItem Header="Preferences"/>
+
+            <MenuItem Header="Settings" Foreground="White">
+                <MenuItem Header="Preferences..." 
+                          Command="{Binding OpenPreferencesCommand}"/>
+                <MenuItem Header="Color Scheme">
+                    <MenuItem Header="Dark" IsCheckable="True" IsChecked="True"/>
+                    <MenuItem Header="Light" IsCheckable="True"/>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Export Settings..." 
+                          Command="{Binding ExportSettingsCommand}"/>
+                <MenuItem Header="Import Settings..." 
+                          Command="{Binding ImportSettingsCommand}"/>
+            </MenuItem>
+
+            <MenuItem Header="UI Save" Foreground="White">
+                <MenuItem Header="Save Current Layout" 
+                          Command="{Binding SaveLayoutCommand}"
+                          InputGestureText="Ctrl+S"/>
+                <MenuItem Header="Load Layout..." 
+                          Command="{Binding LoadLayoutCommand}"
+                          InputGestureText="Ctrl+L"/>
+                <Separator/>
+                <MenuItem Header="Export Wafer Map..." 
+                          Command="{Binding ExportWaferMapCommand}"/>
+                <MenuItem Header="Export Defect List..." 
+                          Command="{Binding ExportDefectListCommand}"/>
+                <MenuItem Header="Export Current Image..." 
+                          Command="{Binding ExportCurrentImageCommand}"/>
+                <Separator/>
+                <MenuItem Header="Take Screenshot" 
+                          Command="{Binding TakeScreenshotCommand}"
+                          InputGestureText="Ctrl+P"/>
+                <Separator/>
+                <MenuItem Header="Reset to Default Layout" 
+                          Command="{Binding ResetLayoutCommand}"/>
             </MenuItem>
         </Menu>
 
         <!-- 메인 컨텐츠 영역 -->
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="5"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -63,38 +145,85 @@
 
             <!-- 좌측 상단: Wafer Map Viewer -->
             <Border Grid.Row="0" Grid.Column="0" 
-                    BorderBrush="Gray" BorderThickness="1" Margin="5">
+                    BorderBrush="#FF3E3E42" BorderThickness="2">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
                     <!-- 헤더 -->
-                    <Border Grid.Row="0" Background="#FF2D2D30" Padding="5">
-                        <TextBlock Text="Wafer Map Viewer" 
-                                   Foreground="White" 
-                                   Style="{StaticResource HeaderTextStyle}"/>
+                    <Border Grid.Row="0" Background="#FF007ACC" Padding="8,5">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="⬢ Wafer Map Viewer" 
+                                       Foreground="White" 
+                                       FontWeight="Bold"
+                                       FontSize="13"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding WaferMapStats}" 
+                                       Foreground="White" 
+                                       Margin="15,0,0,0"
+                                       VerticalAlignment="Center"
+                                       FontSize="11"/>
+                        </StackPanel>
                     </Border>
 
                     <!-- Wafer Map Canvas -->
-                    <Canvas Grid.Row="1" 
-                            Background="Black" 
-                            ClipToBounds="True"
-                            x:Name="WaferMapCanvas">
-                        <!-- 웨이퍼 맵이 여기에 그려집니다 -->
-                        <Ellipse Width="400" Height="400" 
-                                 Fill="#FF1E1E1E" 
-                                 Stroke="DarkGray" 
-                                 StrokeThickness="2"
-                                 Canvas.Left="50" Canvas.Top="50"/>
-                    </Canvas>
+                    <Border Grid.Row="1" Background="Black">
+                        <Viewbox Stretch="Uniform">
+                            <Canvas Width="500" Height="500" 
+                                    x:Name="WaferMapCanvas"
+                                    MouseLeftButtonDown="WaferMapCanvas_MouseLeftButtonDown">
+                                <!-- 웨이퍼 맵이 여기에 그려집니다 -->
+                            </Canvas>
+                        </Viewbox>
+                    </Border>
+
+                    <!-- 범례 및 통계 -->
+                    <Border Grid.Row="2" 
+                            Background="#FF2D2D30" 
+                            Padding="10,5">
+                        <StackPanel Orientation="Horizontal" 
+                                    HorizontalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,20,0">
+                                <Rectangle Width="15" Height="15" 
+                                           Fill="LightGreen" 
+                                           Stroke="White" 
+                                           StrokeThickness="1"/>
+                                <TextBlock Text="Good Dies" 
+                                           Foreground="White" 
+                                           Margin="5,0,0,0"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,20,0">
+                                <Rectangle Width="15" Height="15" 
+                                           Fill="Red" 
+                                           Stroke="White" 
+                                           StrokeThickness="1"/>
+                                <TextBlock Text="Defective Dies" 
+                                           Foreground="White" 
+                                           Margin="5,0,0,0"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle Width="15" Height="15" 
+                                           Fill="DarkGray" 
+                                           Stroke="White" 
+                                           StrokeThickness="1"/>
+                                <TextBlock Text="Edge Dies" 
+                                           Foreground="White" 
+                                           Margin="5,0,0,0"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
                 </Grid>
             </Border>
 
             <!-- 우측 상단: Defect Image Viewer -->
             <Border Grid.Row="0" Grid.Column="2" 
-                    BorderBrush="Gray" BorderThickness="1" Margin="5">
+                    BorderBrush="#FF3E3E42" BorderThickness="2">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -103,104 +232,167 @@
                     </Grid.RowDefinitions>
 
                     <!-- 헤더 -->
-                    <Border Grid.Row="0" Background="#FF2D2D30" Padding="5">
-                        <TextBlock Text="Defect Image Viewer" 
-                                   Foreground="White" 
-                                   Style="{StaticResource HeaderTextStyle}"/>
+                    <Border Grid.Row="0" Background="#FF6B1FB0" Padding="8,5">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🔍 Defect Image Viewer" 
+                                       Foreground="White" 
+                                       FontWeight="Bold"
+                                       FontSize="13"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding CurrentImageInfo}" 
+                                       Foreground="White" 
+                                       Margin="15,0,0,0"
+                                       VerticalAlignment="Center"
+                                       FontSize="11"/>
+                        </StackPanel>
                     </Border>
 
                     <!-- 이미지 뷰어 -->
-                    <ScrollViewer Grid.Row="1" 
-                                  Background="#FF3E3E42"
-                                  HorizontalScrollBarVisibility="Auto"
-                                  VerticalScrollBarVisibility="Auto">
-                        <Image x:Name="DefectImage" 
-                               Stretch="None"
-                               RenderOptions.BitmapScalingMode="HighQuality">
-                            <!-- Source는 ViewModel에서 바인딩 -->
-                        </Image>
-                    </ScrollViewer>
+                    <Border Grid.Row="1" Background="#FF1E1E1E">
+                        <Grid>
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                          VerticalScrollBarVisibility="Auto"
+                                          x:Name="ImageScrollViewer">
+                                <Canvas x:Name="ImageCanvas"
+                                        Background="Transparent"
+                                        MouseWheel="ImageCanvas_MouseWheel"
+                                        MouseLeftButtonDown="ImageCanvas_MouseLeftButtonDown"
+                                        MouseMove="ImageCanvas_MouseMove"
+                                        MouseLeftButtonUp="ImageCanvas_MouseLeftButtonUp">
+                                    <Image x:Name="DefectImage" 
+                                           Stretch="None"
+                                           RenderOptions.BitmapScalingMode="HighQuality"/>
+                                </Canvas>
+                            </ScrollViewer>
+
+                            <!-- 이미지가 없을 때 표시 -->
+                            <TextBlock Text="No Image Loaded"
+                                       Foreground="Gray"
+                                       FontSize="16"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Visibility="{Binding NoImageVisibility}"/>
+                        </Grid>
+                    </Border>
 
                     <!-- 이미지 조작 컨트롤 -->
                     <Border Grid.Row="2" 
                             Background="#FF2D2D30" 
-                            Padding="10">
+                            Padding="10,8">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="5"/>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="5"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
                             <!-- 줌 컨트롤 -->
-                            <StackPanel Grid.Row="0" 
-                                        Orientation="Horizontal" 
-                                        Margin="0,0,0,5">
-                                <Button Content="Zoom+" 
-                                        Style="{StaticResource ToolButtonStyle}"
-                                        Command="{Binding ZoomInCommand}"
-                                        ToolTip="Zoom In"/>
-                                <Button Content="Zoom-" 
-                                        Style="{StaticResource ToolButtonStyle}"
-                                        Command="{Binding ZoomOutCommand}"
-                                        ToolTip="Zoom Out"/>
-                                <Button Content="Reset" 
-                                        Style="{StaticResource ToolButtonStyle}"
-                                        Command="{Binding ResetViewCommand}"
-                                        ToolTip="Reset View"/>
-                                <TextBlock Text="{Binding ZoomLevel, StringFormat={}{0:P0}}" 
-                                           Foreground="White" 
-                                           VerticalAlignment="Center"
-                                           Margin="10,0,0,0"/>
-                            </StackPanel>
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" 
+                                            Orientation="Horizontal">
+                                    <Button Content="+" 
+                                            Style="{StaticResource ToolButtonStyle}"
+                                            Command="{Binding ZoomInCommand}"
+                                            ToolTip="Zoom In (Ctrl++)"/>
+                                    <Button Content="-" 
+                                            Style="{StaticResource ToolButtonStyle}"
+                                            Command="{Binding ZoomOutCommand}"
+                                            ToolTip="Zoom Out (Ctrl+-)"/>
+                                    <Button Content="⟲" 
+                                            Style="{StaticResource ToolButtonStyle}"
+                                            Command="{Binding ResetViewCommand}"
+                                            ToolTip="Reset View (Ctrl+0)"/>
+                                    <Button Content="⛶" 
+                                            Style="{StaticResource ToolButtonStyle}"
+                                            Command="{Binding FitToWindowCommand}"
+                                            ToolTip="Fit to Window"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" 
+                                            Orientation="Horizontal"
+                                            HorizontalAlignment="Right">
+                                    <TextBlock Text="Zoom:" 
+                                               Foreground="White" 
+                                               VerticalAlignment="Center"
+                                               Margin="0,0,10,0"/>
+                                    <TextBlock Text="{Binding ZoomLevel, StringFormat={}{0:F0}%}" 
+                                               Foreground="Cyan" 
+                                               VerticalAlignment="Center"
+                                               FontWeight="Bold"
+                                               MinWidth="50"/>
+                                </StackPanel>
+                            </Grid>
 
                             <!-- 밝기 조절 -->
-                            <StackPanel Grid.Row="1" 
-                                        Orientation="Horizontal" 
-                                        Margin="0,0,0,5">
-                                <TextBlock Text="Brightness:" 
+                            <Grid Grid.Row="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="90"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="50"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0"
+                                           Text="Brightness:" 
                                            Foreground="White" 
-                                           Width="80"
                                            VerticalAlignment="Center"/>
-                                <Slider x:Name="BrightnessSlider"
+                                <Slider Grid.Column="1"
+                                        x:Name="BrightnessSlider"
                                         Minimum="-100" 
                                         Maximum="100" 
                                         Value="0"
-                                        Width="200"
-                                        VerticalAlignment="Center"/>
-                                <TextBlock Text="{Binding ElementName=BrightnessSlider, Path=Value, StringFormat={}{0:F0}}" 
+                                        TickFrequency="10"
+                                        IsSnapToTickEnabled="True"
+                                        VerticalAlignment="Center"
+                                        ValueChanged="BrightnessSlider_ValueChanged"/>
+                                <TextBlock Grid.Column="2"
+                                           Text="{Binding ElementName=BrightnessSlider, Path=Value, StringFormat={}{0:F0}}" 
                                            Foreground="White" 
-                                           Width="40"
-                                           Margin="5,0,0,0"
-                                           VerticalAlignment="Center"/>
-                            </StackPanel>
+                                           VerticalAlignment="Center"
+                                           TextAlignment="Right"/>
+                            </Grid>
 
                             <!-- 대비 조절 -->
-                            <StackPanel Grid.Row="2" Orientation="Horizontal">
-                                <TextBlock Text="Contrast:" 
+                            <Grid Grid.Row="4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="90"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="50"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0"
+                                           Text="Contrast:" 
                                            Foreground="White" 
-                                           Width="80"
                                            VerticalAlignment="Center"/>
-                                <Slider x:Name="ContrastSlider"
+                                <Slider Grid.Column="1"
+                                        x:Name="ContrastSlider"
                                         Minimum="-100" 
                                         Maximum="100" 
                                         Value="0"
-                                        Width="200"
-                                        VerticalAlignment="Center"/>
-                                <TextBlock Text="{Binding ElementName=ContrastSlider, Path=Value, StringFormat={}{0:F0}}" 
+                                        TickFrequency="10"
+                                        IsSnapToTickEnabled="True"
+                                        VerticalAlignment="Center"
+                                        ValueChanged="ContrastSlider_ValueChanged"/>
+                                <TextBlock Grid.Column="2"
+                                           Text="{Binding ElementName=ContrastSlider, Path=Value, StringFormat={}{0:F0}}" 
                                            Foreground="White" 
-                                           Width="40"
-                                           Margin="5,0,0,0"
-                                           VerticalAlignment="Center"/>
-                            </StackPanel>
+                                           VerticalAlignment="Center"
+                                           TextAlignment="Right"/>
+                            </Grid>
                         </Grid>
                     </Border>
                 </Grid>
             </Border>
 
             <!-- 좌측 하단: File List Viewer -->
-            <Border Grid.Row="1" Grid.Column="0" 
-                    BorderBrush="Gray" BorderThickness="1" Margin="5">
+            <Border Grid.Row="2" Grid.Column="0" 
+                    BorderBrush="#FF3E3E42" BorderThickness="2">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -209,44 +401,60 @@
                     </Grid.RowDefinitions>
 
                     <!-- 헤더 -->
-                    <Border Grid.Row="0" Background="#FF2D2D30" Padding="5">
-                        <TextBlock Text="File List Viewer" 
+                    <Border Grid.Row="0" Background="#FF0E7A0D" Padding="8,5">
+                        <TextBlock Text="📁 File List Viewer" 
                                    Foreground="White" 
-                                   Style="{StaticResource HeaderTextStyle}"/>
+                                   FontWeight="Bold"
+                                   FontSize="13"/>
                     </Border>
 
                     <!-- 툴바 -->
-                    <ToolBar Grid.Row="1" Background="#FF3E3E42">
-                        <Button Content="Open" 
+                    <ToolBar Grid.Row="1" 
+                             Background="#FF3E3E42"
+                             BorderBrush="#FF555555"
+                             BorderThickness="0,1">
+                        <Button Content="📂 Open" 
                                 Command="{Binding OpenFileCommand}"
-                                ToolTip="Open File"/>
+                                ToolTip="Open Klarf File (Ctrl+O)"
+                                Padding="8,4"/>
                         <Separator/>
-                        <Button Content="Refresh" 
+                        <Button Content="🖼️ Images" 
+                                Command="{Binding OpenImageFolderCommand}"
+                                ToolTip="Open Image Folder"
+                                Padding="8,4"/>
+                        <Separator/>
+                        <Button Content="🔄" 
                                 Command="{Binding RefreshCommand}"
-                                ToolTip="Refresh"/>
+                                ToolTip="Refresh (F5)"
+                                Padding="8,4"/>
+                        <Separator/>
+                        <Button Content="🗑️ Clear" 
+                                Command="{Binding ClearFilesCommand}"
+                                ToolTip="Clear All Files"
+                                Padding="8,4"/>
                     </ToolBar>
 
                     <!-- 파일 트리 -->
                     <TreeView Grid.Row="2" 
                               Background="#FF2D2D30"
                               Foreground="White"
-                              x:Name="FileTreeView">
-                        <!-- ItemsSource는 ViewModel에서 바인딩 -->
-                        <TreeViewItem Header="Root" IsExpanded="True">
-                            <TreeViewItem Header="Sample_Wafer_001.klf"/>
-                            <TreeViewItem Header="Images" IsExpanded="True">
-                                <TreeViewItem Header="Defect_001.tif"/>
-                                <TreeViewItem Header="Defect_002.tif"/>
-                                <TreeViewItem Header="Defect_003.tif"/>
-                            </TreeViewItem>
-                        </TreeViewItem>
+                              BorderThickness="0"
+                              x:Name="FileTreeView"
+                              SelectedItemChanged="FileTreeView_SelectedItemChanged">
+                        <TreeView.ItemContainerStyle>
+                            <Style TargetType="TreeViewItem">
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="FontSize" Value="11"/>
+                                <Setter Property="Padding" Value="2"/>
+                            </Style>
+                        </TreeView.ItemContainerStyle>
                     </TreeView>
                 </Grid>
             </Border>
 
             <!-- 우측 하단: Defect Info Viewer -->
-            <Border Grid.Row="1" Grid.Column="2" 
-                    BorderBrush="Gray" BorderThickness="1" Margin="5">
+            <Border Grid.Row="2" Grid.Column="2" 
+                    BorderBrush="#FF3E3E42" BorderThickness="2">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -256,17 +464,27 @@
                     </Grid.RowDefinitions>
 
                     <!-- 헤더 -->
-                    <Border Grid.Row="0" Background="#FF2D2D30" Padding="5">
-                        <TextBlock Text="Defect Information" 
-                                   Foreground="White" 
-                                   Style="{StaticResource HeaderTextStyle}"/>
+                    <Border Grid.Row="0" Background="#FFD83B01" Padding="8,5">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="📊 Sample Information" 
+                                       Foreground="White" 
+                                       FontWeight="Bold"
+                                       FontSize="13"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding DefectCount, StringFormat=({0} Defects)}" 
+                                       Foreground="White" 
+                                       Margin="15,0,0,0"
+                                       VerticalAlignment="Center"
+                                       FontSize="11"/>
+                        </StackPanel>
                     </Border>
 
                     <!-- 샘플 정보 -->
                     <Border Grid.Row="1" 
-                            Background="#FF3E3E42" 
-                            Padding="10"
-                            Margin="5">
+                            Background="#FF252526" 
+                            Padding="12,8"
+                            BorderBrush="#FF3E3E42"
+                            BorderThickness="0,1">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -281,39 +499,31 @@
 
                             <TextBlock Grid.Row="0" Grid.Column="0" 
                                        Text="File Name:" 
-                                       Foreground="LightGray" 
-                                       Margin="0,2"/>
+                                       Style="{StaticResource InfoLabelStyle}"/>
                             <TextBlock Grid.Row="0" Grid.Column="1" 
-                                       Text="Sample_Wafer_001.klf" 
-                                       Foreground="White" 
-                                       Margin="10,2"/>
+                                       Text="{Binding FileName}" 
+                                       Style="{StaticResource InfoValueStyle}"/>
 
                             <TextBlock Grid.Row="1" Grid.Column="0" 
-                                       Text="Date/Time:" 
-                                       Foreground="LightGray" 
-                                       Margin="0,2"/>
+                                       Text="Inspection Date:" 
+                                       Style="{StaticResource InfoLabelStyle}"/>
                             <TextBlock Grid.Row="1" Grid.Column="1" 
-                                       Text="2025-09-29 10:15:42" 
-                                       Foreground="White" 
-                                       Margin="10,2"/>
+                                       Text="{Binding InspectionDate}" 
+                                       Style="{StaticResource InfoValueStyle}"/>
 
                             <TextBlock Grid.Row="2" Grid.Column="0" 
                                        Text="Wafer ID:" 
-                                       Foreground="LightGray" 
-                                       Margin="0,2"/>
+                                       Style="{StaticResource InfoLabelStyle}"/>
                             <TextBlock Grid.Row="2" Grid.Column="1" 
-                                       Text="WF-2025-001" 
-                                       Foreground="White" 
-                                       Margin="10,2"/>
+                                       Text="{Binding WaferId}" 
+                                       Style="{StaticResource InfoValueStyle}"/>
 
                             <TextBlock Grid.Row="3" Grid.Column="0" 
                                        Text="Device ID:" 
-                                       Foreground="LightGray" 
-                                       Margin="0,2"/>
+                                       Style="{StaticResource InfoLabelStyle}"/>
                             <TextBlock Grid.Row="3" Grid.Column="1" 
-                                       Text="DEV-12345" 
-                                       Foreground="White" 
-                                       Margin="10,2"/>
+                                       Text="{Binding DeviceId}" 
+                                       Style="{StaticResource InfoValueStyle}"/>
                         </Grid>
                     </Border>
 
@@ -327,37 +537,56 @@
                               GridLinesVisibility="All"
                               CanUserAddRows="False"
                               SelectionMode="Single"
-                              Margin="5">
+                              BorderThickness="0"
+                              SelectionChanged="DefectDataGrid_SelectionChanged">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="#FF3E3E42"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="Padding" Value="8,5"/>
+                                <Setter Property="BorderBrush" Value="#FF555555"/>
+                                <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+                        <DataGrid.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="BorderBrush" Value="#FF3E3E42"/>
+                                <Setter Property="Padding" Value="5,3"/>
+                            </Style>
+                        </DataGrid.CellStyle>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="#" 
-                                                Width="40" 
+                                                Width="50" 
                                                 Binding="{Binding Index}"/>
                             <DataGridTextColumn Header="Defect ID" 
-                                                Width="100" 
+                                                Width="110" 
                                                 Binding="{Binding DefectId}"/>
                             <DataGridTextColumn Header="X" 
-                                                Width="70" 
-                                                Binding="{Binding XCoord}"/>
-                            <DataGridTextColumn Header="Y" 
-                                                Width="70" 
-                                                Binding="{Binding YCoord}"/>
-                            <DataGridTextColumn Header="Type" 
                                                 Width="80" 
+                                                Binding="{Binding XCoord, StringFormat=F2}"/>
+                            <DataGridTextColumn Header="Y" 
+                                                Width="80" 
+                                                Binding="{Binding YCoord, StringFormat=F2}"/>
+                            <DataGridTextColumn Header="Type" 
+                                                Width="90" 
                                                 Binding="{Binding DefectType}"/>
                             <DataGridTextColumn Header="Size" 
-                                                Width="60" 
-                                                Binding="{Binding Size}"/>
+                                                Width="*" 
+                                                Binding="{Binding Size, StringFormat=F2}"/>
                         </DataGrid.Columns>
                     </DataGrid>
 
                     <!-- 네비게이션 컨트롤 -->
                     <Border Grid.Row="3" 
-                            Background="#FF2D2D30" 
-                            Padding="10">
+                            Background="#FF252526" 
+                            Padding="10,8"
+                            BorderBrush="#FF3E3E42"
+                            BorderThickness="0,1,0,0">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="20"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
@@ -366,28 +595,34 @@
                                         Orientation="Horizontal"
                                         HorizontalAlignment="Left">
                                 <TextBlock Text="Die:" 
-                                           Foreground="White" 
+                                           Foreground="Cyan" 
                                            VerticalAlignment="Center"
+                                           FontWeight="Bold"
                                            Margin="0,0,10,0"/>
-                                <Button Content="|&lt;&lt;" 
+                                <Button Content="|◀◀" 
                                         Style="{StaticResource NavigationButtonStyle}"
                                         Command="{Binding FirstDieCommand}"
                                         ToolTip="First Die"/>
-                                <Button Content="&lt;" 
+                                <Button Content="◀" 
                                         Style="{StaticResource NavigationButtonStyle}"
                                         Command="{Binding PreviousDieCommand}"
                                         ToolTip="Previous Die"/>
-                                <TextBlock Text="1 / 0" 
-                                           Foreground="White" 
-                                           VerticalAlignment="Center"
-                                           Margin="10,0"
-                                           MinWidth="50"
-                                           TextAlignment="Center"/>
-                                <Button Content="&gt;" 
+                                <Border Background="#FF3E3E42" 
+                                        Padding="10,5"
+                                        Margin="5,0"
+                                        CornerRadius="3">
+                                    <TextBlock Text="{Binding CurrentDieInfo}" 
+                                               Foreground="White" 
+                                               VerticalAlignment="Center"
+                                               FontWeight="Bold"
+                                               MinWidth="60"
+                                               TextAlignment="Center"/>
+                                </Border>
+                                <Button Content="▶" 
                                         Style="{StaticResource NavigationButtonStyle}"
                                         Command="{Binding NextDieCommand}"
                                         ToolTip="Next Die"/>
-                                <Button Content="&gt;&gt;|" 
+                                <Button Content="▶▶|" 
                                         Style="{StaticResource NavigationButtonStyle}"
                                         Command="{Binding LastDieCommand}"
                                         ToolTip="Last Die"/>
@@ -398,28 +633,34 @@
                                         Orientation="Horizontal"
                                         HorizontalAlignment="Right">
                                 <TextBlock Text="Defect:" 
-                                           Foreground="White" 
+                                           Foreground="Orange" 
                                            VerticalAlignment="Center"
+                                           FontWeight="Bold"
                                            Margin="0,0,10,0"/>
-                                <Button Content="|&lt;&lt;" 
+                                <Button Content="|◀◀" 
                                         Style="{StaticResource NavigationButtonStyle}"
                                         Command="{Binding FirstDefectCommand}"
                                         ToolTip="First Defect"/>
-                                <Button Content="&lt;" 
+                                <Button Content="◀" 
                                         Style="{StaticResource NavigationButtonStyle}"
                                         Command="{Binding PreviousDefectCommand}"
                                         ToolTip="Previous Defect"/>
-                                <TextBlock Text="1 / 453" 
-                                           Foreground="White" 
-                                           VerticalAlignment="Center"
-                                           Margin="10,0"
-                                           MinWidth="60"
-                                           TextAlignment="Center"/>
-                                <Button Content="&gt;" 
+                                <Border Background="#FF3E3E42" 
+                                        Padding="10,5"
+                                        Margin="5,0"
+                                        CornerRadius="3">
+                                    <TextBlock Text="{Binding CurrentDefectInfo}" 
+                                               Foreground="White" 
+                                               VerticalAlignment="Center"
+                                               FontWeight="Bold"
+                                               MinWidth="70"
+                                               TextAlignment="Center"/>
+                                </Border>
+                                <Button Content="▶" 
                                         Style="{StaticResource NavigationButtonStyle}"
                                         Command="{Binding NextDefectCommand}"
                                         ToolTip="Next Defect"/>
-                                <Button Content="&gt;&gt;|" 
+                                <Button Content="▶▶|" 
                                         Style="{StaticResource NavigationButtonStyle}"
                                         Command="{Binding LastDefectCommand}"
                                         ToolTip="Last Defect"/>
@@ -430,10 +671,75 @@
             </Border>
 
             <!-- GridSplitter (좌우 분할) -->
-            <GridSplitter Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
+            <GridSplitter Grid.Row="0" Grid.Column="1" Grid.RowSpan="3"
                           Width="5"
                           HorizontalAlignment="Stretch"
-                          Background="DarkGray"/>
+                          Background="#FF555555"
+                          ShowsPreview="True"/>
+
+            <!-- GridSplitter (상하 분할) -->
+            <GridSplitter Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                          Height="5"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch"
+                          Background="#FF555555"
+                          ShowsPreview="True"/>
         </Grid>
+
+        <!-- 상태바 -->
+        <StatusBar Grid.Row="2" 
+                   Background="#FF007ACC" 
+                   Height="28">
+            <StatusBarItem>
+                <TextBlock Text="{Binding StatusMessage}" 
+                           Foreground="White"
+                           FontSize="11"/>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Total Dies: " Foreground="White" FontSize="11"/>
+                    <TextBlock Text="{Binding TotalDies}" 
+                               Foreground="Cyan" 
+                               FontWeight="Bold"
+                               FontSize="11"/>
+                </StackPanel>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Good: " Foreground="White" FontSize="11"/>
+                    <TextBlock Text="{Binding GoodDies}" 
+                               Foreground="LightGreen" 
+                               FontWeight="Bold"
+                               FontSize="11"/>
+                </StackPanel>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Defective: " Foreground="White" FontSize="11"/>
+                    <TextBlock Text="{Binding DefectiveDies}" 
+                               Foreground="Red" 
+                               FontWeight="Bold"
+                               FontSize="11"/>
+                </StackPanel>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Yield: " Foreground="White" FontSize="11"/>
+                    <TextBlock Text="{Binding YieldRate, StringFormat={}{0:F2}%}" 
+                               Foreground="Yellow" 
+                               FontWeight="Bold"
+                               FontSize="11"/>
+                </StackPanel>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <TextBlock Text="{Binding CurrentTime}" 
+                           Foreground="White"
+                           FontSize="11"/>
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </Window>
