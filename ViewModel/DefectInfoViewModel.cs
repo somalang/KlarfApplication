@@ -8,5 +8,7 @@ namespace KlarfApplication.ViewModel
 {
     class DefectInfoViewModel
     {
+        //SelectedDefect
+        //ExportDefectInfoCommand
     }
 }

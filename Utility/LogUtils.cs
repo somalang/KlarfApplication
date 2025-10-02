@@ -8,5 +8,8 @@ namespace KlarfApplication.Service
 {
     class LogService
     {
+        //WriteInfo
+        //WriteError
+        //WriteDebug
     }
 }

@@ -8,5 +8,9 @@ namespace KlarfApplication.ViewModel
 {
     class DefectImageViewModel
     {
+        //DefectImage
+        //SelectedDefect
+        //ZoomInCommand
+        //ZoomOutCommand
     }
 }

@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace KlarfApplication.Utility
 {
-    class MathUtils
+    internal class ZoomUtils
     {
-        //Normalize
-        //CalculateDistance
+        //ZoomIn
+        //ZoomOut
+        //ResetZoom
     }
 }

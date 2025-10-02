@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace KlarfApplication.Utility
 {
-    class MathUtils
+    internal class CoordinatesUtils
     {
-        //Normalize
-        //CalculateDistance
+        //ToWaferCoordinates()
+        //ToImageCoordinates()
     }
 }

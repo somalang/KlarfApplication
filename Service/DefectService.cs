@@ -8,5 +8,7 @@ namespace KlarfApplication.Service
 {
     class DefectService
     {
+        //GetDefects()
+        // FilterDefects()
     }
 }

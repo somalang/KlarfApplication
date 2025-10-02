@@ -8,5 +8,7 @@ namespace KlarfApplication.ViewModel
 {
     class FileListViewModel
     {
+        //AddFileCommand()
+        //RemoveFileCommand()
     }
 }

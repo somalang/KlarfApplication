@@ -8,5 +8,7 @@ namespace KlarfApplication.Service
 {
     class KlarfService
     {
+        //Loadklarf()
+        //SaveKlarf()
     }
 }

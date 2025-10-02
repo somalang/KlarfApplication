@@ -8,5 +8,8 @@ namespace KlarfApplication.ViewModel
 {
     class WaferViewModel
     {
+        //Klarfdata
+        //defects
+        //SelectDefectCommand
     }
 }
