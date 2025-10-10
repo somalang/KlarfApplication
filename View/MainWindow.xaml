@@ -1,4 +1,4 @@
-﻿<Window x:Class="KlarfReviewTool.MainWindow"
+﻿<Window x:Class="KlarfApplication.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="WPF Klarf Review Tool" 
@@ -138,14 +138,15 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1.2*"/>
+                <ColumnDefinition Width="54*"/>
+                <ColumnDefinition Width="7*"/>
                 <ColumnDefinition Width="5"/>
-                <ColumnDefinition Width="1.2*"/>
+                <ColumnDefinition Width="61*"/>
             </Grid.ColumnDefinitions>
 
             <!-- 좌측 상단: Wafer Map Viewer -->
             <Border Grid.Row="0" Grid.Column="0" 
-                    BorderBrush="#FF3E3E42" BorderThickness="2">
+                    BorderBrush="#FF3E3E42" BorderThickness="2" Grid.ColumnSpan="2" Margin="0,0,0,5" Grid.RowSpan="2">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -170,7 +171,7 @@
                     </Border>
 
                     <!-- Wafer Map Canvas -->
-                    <Border Grid.Row="1" Background="Black">
+                    <Border Grid.Row="1" Background="#FF1E1E1E">
                         <Viewbox Stretch="Uniform">
                             <Canvas Width="500" Height="500" 
                                     x:Name="WaferMapCanvas"
@@ -222,8 +223,8 @@
             </Border>
 
             <!-- 우측 상단: Defect Image Viewer -->
-            <Border Grid.Row="0" Grid.Column="2" 
-                    BorderBrush="#FF3E3E42" BorderThickness="2">
+            <Border Grid.Row="0" Grid.Column="3" 
+                    BorderBrush="#FF3E3E42" BorderThickness="2" Margin="0,0,0,5" Grid.RowSpan="2">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -392,7 +393,7 @@
 
             <!-- 좌측 하단: File List Viewer -->
             <Border Grid.Row="2" Grid.Column="0" 
-                    BorderBrush="#FF3E3E42" BorderThickness="2">
+                    BorderBrush="#FF3E3E42" BorderThickness="2" Grid.ColumnSpan="2">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -453,7 +454,7 @@
             </Border>
 
             <!-- 우측 하단: Defect Info Viewer -->
-            <Border Grid.Row="2" Grid.Column="2" 
+            <Border Grid.Row="2" Grid.Column="3" 
                     BorderBrush="#FF3E3E42" BorderThickness="2">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -675,15 +676,14 @@
                           Width="5"
                           HorizontalAlignment="Stretch"
                           Background="#FF555555"
-                          ShowsPreview="True"/>
+                          ShowsPreview="True" Grid.ColumnSpan="3" Margin="90,0,792,0"/>
 
             <!-- GridSplitter (상하 분할) -->
-            <GridSplitter Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+            <GridSplitter Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4"
                           Height="5"
                           HorizontalAlignment="Stretch"
-                          VerticalAlignment="Stretch"
                           Background="#FF555555"
-                          ShowsPreview="True"/>
+                          ShowsPreview="True" Margin="0,0,0,411" Grid.RowSpan="2"/>
         </Grid>
 
         <!-- 상태바 -->

@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace KlarfApplication
+namespace KlarfApplication.View
 {
     /// <summary>
-    /// WaferViewer.xaml에 대한 상호 작용 논리
+    /// WaferMapViewer.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class WaferViewer : Page
+    public partial class WaferMapViewer : UserControl
     {
-        public WaferViewer()
+        public WaferMapViewer()
         {
             InitializeComponent();
         }

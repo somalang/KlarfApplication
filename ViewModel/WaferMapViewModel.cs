@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KlarfApplication.ViewModel
 {
-    class WaferViewModel
+    class WaferMapViewModel
     {
         //Klarfdata
         //defects

@@ -18,7 +18,7 @@ namespace KlarfApplication.View
     /// <summary>
     /// DefectImageViewer.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class DefectImageViewer : Page
+    public partial class DefectImageViewer : UserControl
     {
         public DefectImageViewer()
         {
