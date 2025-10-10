@@ -11,7 +11,7 @@
     <Compile Update="View\FileListViewer.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="View\WaferViewer.xaml.cs">
+    <Compile Update="View\WaferMapViewer.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

@@ -6,10 +6,7 @@ using System.Threading.Tasks;
 
 namespace KlarfApplication.Utility
 {
-    class LogService
+    internal class ImageUtils
     {
-        //WriteInfo
-        //WriteError
-        //WriteDebug
     }
 }

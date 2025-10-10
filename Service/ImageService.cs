@@ -4,12 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KlarfApplication.Utility
+namespace KlarfApplication.Service
 {
-    class LogService
+    internal class ImageService
     {
-        //WriteInfo
-        //WriteError
-        //WriteDebug
     }
 }

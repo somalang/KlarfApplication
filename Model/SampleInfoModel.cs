@@ -4,12 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KlarfApplication.Utility
+namespace KlarfApplication.Model
 {
-    class LogService
+    internal class SampleInfoModel
     {
-        //WriteInfo
-        //WriteError
-        //WriteDebug
     }
 }
