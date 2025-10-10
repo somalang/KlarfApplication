@@ -13,8 +13,8 @@ namespace KlarfApplication.Model
         private double _centerY;
         private bool _isGood;
         private bool _isSelected;
-        private string _orientation; // 추가됨 (회전 방향)
-        private ObservableCollection<Defect> _defectsList; // ← DefectModel이라면 이름 맞게 수정
+        private string _orientation; 
+        private ObservableCollection<Defect> _defectsList; 
 
         public int Row
         {
