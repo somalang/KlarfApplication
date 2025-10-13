@@ -37,7 +37,7 @@
             <Border Grid.Row="2" Background="#FF2D2D30" Padding="10,5">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <StackPanel Orientation="Horizontal" Margin="0,0,20,0">
-                        <Rectangle Width="15" Height="15" Fill="LightGreen" Stroke="White" StrokeThickness="1"/>
+                        <Rectangle Width="15" Height="15" Fill="#22AB28" Stroke="White" StrokeThickness="1"/>
                         <TextBlock Text="Good Dies" Foreground="White" Margin="5,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,0,20,0">

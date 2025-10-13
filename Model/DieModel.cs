@@ -18,50 +18,99 @@ namespace KlarfApplication.Model
 
         public int Row
         {
-            get => _row;
-            set { _row = value; OnPropertyChanged(nameof(Row)); }
+            get
+            {
+                return _row;
+            }
+            set { 
+                _row = value; 
+                OnPropertyChanged(nameof(Row)); 
+            }
         }
 
         public int Column
         {
-            get => _column;
-            set { _column = value; OnPropertyChanged(nameof(Column)); }
+            get
+            {
+                return _column;
+            }
+            set { 
+                _column = value; 
+                OnPropertyChanged(nameof(Column)); 
+            }
         }
 
         public double CenterX
         {
-            get => _centerX;
-            set { _centerX = value; OnPropertyChanged(nameof(CenterX)); }
+            get
+            {
+                return _centerX;
+            }
+            set { 
+                _centerX = value; 
+                OnPropertyChanged(nameof(CenterX));
+            }
         }
 
         public double CenterY
         {
-            get => _centerY;
-            set { _centerY = value; OnPropertyChanged(nameof(CenterY)); }
+            get
+            {
+                return _centerY;
+            }
+            set { 
+                _centerY = value; 
+                OnPropertyChanged(nameof(CenterY)); 
+            }
         }
 
         public bool IsGood
         {
-            get => _isGood;
-            set { _isGood = value; OnPropertyChanged(nameof(IsGood)); }
+            get
+            {
+                return _isGood;
+            }
+            set
+            {
+                _isGood = value;
+                OnPropertyChanged(nameof(IsGood));
+            }
         }
 
         public bool IsSelected
         {
-            get => _isSelected;
-            set { _isSelected = value; OnPropertyChanged(nameof(IsSelected)); }
+            get
+            {
+                return _isSelected;
+            }
+            set { 
+                _isSelected = value; 
+                OnPropertyChanged(nameof(IsSelected)); 
+            }
         }
 
         public string Orientation
         {
-            get => _orientation;
-            set { _orientation = value; OnPropertyChanged(nameof(Orientation)); }
+            get
+            {
+                return _orientation;
+            }
+            set { 
+                _orientation = value; 
+                OnPropertyChanged(nameof(Orientation)); 
+            }
         }
 
         public ObservableCollection<Defect> DefectsList
         {
-            get => _defectsList;
-            set { _defectsList = value; OnPropertyChanged(nameof(DefectsList)); }
+            get
+            {
+                return _defectsList;
+            }
+            set { 
+                _defectsList = value; 
+                OnPropertyChanged(nameof(DefectsList)); 
+            }
         }
 
         public DieModel()

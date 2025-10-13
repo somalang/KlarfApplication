@@ -22,12 +22,20 @@
             <MenuItem Header="File">
                 <MenuItem Header="Open Klarf File..." />
                 <MenuItem Header="Open Image Folder..." />
+                <MenuItem Header="Save Image ..." />
+                <Separator/>
+                <MenuItem Header="Exit" />
+            </MenuItem>
+            <MenuItem Header="Settings">
+                <MenuItem Header="Open Klarf File..." />
+                <MenuItem Header="Open Image Folder..." />
+                <MenuItem Header="Save Image ..." />
                 <Separator/>
                 <MenuItem Header="Exit" />
             </MenuItem>
         </Menu>
 
-        <!-- 메인 컨텐츠 -->
+        <!-- 뷰어 표시 -->
         <Grid Grid.Row="1" Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
@@ -40,19 +48,12 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- 좌상단: WaferMapViewer -->
             <views:WaferMapViewer Grid.Row="0" Grid.Column="0" />
-
-            <!-- 우상단: DefectImageViewer -->
             <views:DefectImageViewer Grid.Row="0" Grid.Column="2" />
-
-            <!-- 좌하단: FileListViewer -->
             <views:FileListViewer Grid.Row="2" Grid.Column="0" />
-
-            <!-- 우하단: DefectInfoViewer -->
             <views:DefectInfoViewer Grid.Row="2" Grid.Column="2" />
 
-            <!-- 분할선 -->
+            <!-- 영역 나누기 사분면 -->
             <GridSplitter Grid.Row="0" Grid.Column="1"
                           Width="5" Background="#FF555555"
                           VerticalAlignment="Stretch" ShowsPreview="True"/>
@@ -62,7 +63,7 @@
                           Grid.ColumnSpan="3"/>
         </Grid>
 
-        <!-- 상태바 -->
+        <!-- 하단 상태바 -->
         <StatusBar Grid.Row="2" Background="#FF007ACC" Height="28">
             <StatusBarItem>
                 <TextBlock Text="{Binding StatusMessage}" Foreground="White" FontSize="11"/>

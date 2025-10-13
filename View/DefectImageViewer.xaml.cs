@@ -1,28 +1,45 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace KlarfApplication.View
 {
-    /// <summary>
-    /// DefectImageViewer.xaml에 대한 상호 작용 논리
-    /// </summary>
     public partial class DefectImageViewer : UserControl
     {
         public DefectImageViewer()
         {
             InitializeComponent();
+        }
+
+        private void ImageCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            // 줌 기능 구현
+        }
+
+        private void ImageCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            // 드래그 시작
+        }
+
+        private void ImageCanvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            // 드래그 중
+        }
+
+        private void ImageCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            // 드래그 종료
+        }
+
+        private void BrightnessSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            // 밝기 조정
+        }
+
+        private void ContrastSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            // 대비 조정
         }
     }
 }

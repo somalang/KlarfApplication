@@ -17,44 +17,86 @@ namespace KlarfApplication.Model
 
         public double Diameter
         {
-            get => _diameter;
-            set { _diameter = value; OnPropertyChanged(nameof(Diameter)); }
+            get
+            {
+                return _diameter;
+            }
+            set { 
+                _diameter = value; 
+                OnPropertyChanged(nameof(Diameter)); 
+            }
         }
 
         public double CenterX
         {
-            get => _centerX;
-            set { _centerX = value; OnPropertyChanged(nameof(CenterX)); }
+            get
+            {
+                return _centerX;
+            }
+            set { 
+                _centerX = value; 
+                OnPropertyChanged(nameof(CenterX));
+            }
         }
 
         public double CenterY
         {
-            get => _centerY;
-            set { _centerY = value; OnPropertyChanged(nameof(CenterY)); }
+            get
+            {
+                return _centerY;
+            }
+            set { 
+                _centerY = value; 
+                OnPropertyChanged(nameof(CenterY)); 
+            }
         }
 
         public string Orientation
         {
-            get => _orientation;
-            set { _orientation = value; OnPropertyChanged(nameof(Orientation)); }
+            get
+            {
+                return _orientation;
+            }
+            set { 
+                _orientation = value; 
+                OnPropertyChanged(nameof(Orientation)); 
+            }
         }
 
         public double DieWidth
         {
-            get => _dieWidth;
-            set { _dieWidth = value; OnPropertyChanged(nameof(DieWidth)); }
+            get
+            {
+                return _dieWidth;
+            }
+            set { 
+                _dieWidth = value; 
+                OnPropertyChanged(nameof(DieWidth)); 
+            }
         }
 
         public double DieHeight
         {
-            get => _dieHeight;
-            set { _dieHeight = value; OnPropertyChanged(nameof(DieHeight)); }
+            get
+            {
+                return _dieHeight;
+            }
+            set { 
+                _dieHeight = value; 
+                OnPropertyChanged(nameof(DieHeight)); 
+            }
         }
 
         public ObservableCollection<DieModel> DiesList
         {
-            get => _diesList;
-            set { _diesList = value; OnPropertyChanged(nameof(DiesList)); }
+            get
+            {
+                return _diesList;
+            }
+            set { 
+                _diesList = value; 
+                OnPropertyChanged(nameof(DiesList));
+            }
         }
 
         public WaferModel()
@@ -64,7 +106,9 @@ namespace KlarfApplication.Model
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged(string propertyName) =>
+        protected void OnPropertyChanged(string propertyName)
+        {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }
