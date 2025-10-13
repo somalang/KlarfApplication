@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using KlarfApplication.Model;
 
 namespace KlarfApplication.Model
 {
-    internal class DieModel : INotifyPropertyChanged
+    public class DieModel : ModelBase
     {
         // die 위치, 불량 여부, 불량 리스트, 중심 좌표, 선택 여부, 회전 방향
         private int _row;
@@ -118,8 +119,5 @@ namespace KlarfApplication.Model
             DefectsList = new ObservableCollection<Defect>();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

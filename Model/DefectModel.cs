@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace KlarfApplication.Model
 {
-    internal class Defect : INotifyPropertyChanged
+    public class Defect : ModelBase
     {
         private int _index;
         private string _defectId;
@@ -136,12 +136,6 @@ namespace KlarfApplication.Model
             }
         }
 
-        public Defect() { }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName) {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-            
+        public Defect() { }            
     }
 }

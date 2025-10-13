@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace KlarfApplication.Model
 {
-    internal class WaferModel : INotifyPropertyChanged
+    internal class WaferModel : ModelBase
     {
         // 웨이퍼 지름, 중심 x,y 좌표, 불량률, die 크기, die 리스트, 방향
         private double _diameter;
@@ -102,13 +102,6 @@ namespace KlarfApplication.Model
         public WaferModel()
         {
             DiesList = new ObservableCollection<DieModel>();
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

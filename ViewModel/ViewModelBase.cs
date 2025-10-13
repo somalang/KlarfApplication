@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 
 namespace KlarfApplication.ViewModel
 {
-    public class DefectInfoViewModel
+    class ViewModelBase
     {
-        //SelectedDefect
-        //ExportDefectInfoCommand
     }
 }

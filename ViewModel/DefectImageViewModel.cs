@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KlarfApplication.ViewModel
 {
-    class DefectImageViewModel
+    public class DefectImageViewModel
     {
         //DefectImage
         //SelectedDefect
