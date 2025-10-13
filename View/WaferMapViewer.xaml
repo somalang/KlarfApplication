@@ -26,11 +26,19 @@
 
             <Border Grid.Row="1" Background="#FF1E1E1E">
                 <Viewbox Stretch="Uniform">
-                    <Canvas Width="500" Height="500"
+                    <Grid>
+                        <Canvas Width="500" Height="500"
                             x:Name="WaferMapCanvas"
                             MouseLeftButtonDown="WaferMapCanvas_MouseLeftButtonDown">
-                        <!-- 웨이퍼 맵 -->
-                    </Canvas>
+                            <!-- 웨이퍼 맵 -->
+                        </Canvas>
+                        <TextBlock Text="No Image Loaded"
+                           Foreground="Gray"
+                           FontSize="25"
+                           HorizontalAlignment="Center" 
+                           VerticalAlignment="Center"
+                           Visibility="{Binding NoImageVisibility}"/>
+                    </Grid>
                 </Viewbox>
             </Border>
 
@@ -41,7 +49,7 @@
                         <TextBlock Text="Good Dies" Foreground="White" Margin="5,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,0,20,0">
-                        <Rectangle Width="15" Height="15" Fill="Red" Stroke="White" StrokeThickness="1"/>
+                        <Rectangle Width="15" Height="15" Fill="#E30413" Stroke="White" StrokeThickness="1"/>
                         <TextBlock Text="Defective Dies" Foreground="White" Margin="5,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">

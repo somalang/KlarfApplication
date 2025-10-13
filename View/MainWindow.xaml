@@ -19,19 +19,22 @@
 
         <!-- 메뉴바 -->
         <Menu Grid.Row="0" Background="#FF2D2D30" Foreground="White">
-            <MenuItem Header="File">
-                <MenuItem Header="Open Klarf File..." />
-                <MenuItem Header="Open Image Folder..." />
-                <MenuItem Header="Save Image ..." />
+            <MenuItem Header="File" >
+                <MenuItem Header="Open Klarf File..." Foreground="#FF2D2D30"/>
+                <MenuItem Header="Open Image Folder..." Foreground="#FF2D2D30"/>
                 <Separator/>
-                <MenuItem Header="Exit" />
+                <MenuItem Header="Save Image ..." Foreground="#FF2D2D30"/>
+                <Separator/>
+                <MenuItem Header="Exit" Foreground="#FF2D2D30"/>
+            </MenuItem>
+            <MenuItem Header="View" >
+                <MenuItem Header="Log..." Foreground="#FF2D2D30"/>
+                <MenuItem Header="Mode..." Foreground="#FF2D2D30"/>
             </MenuItem>
             <MenuItem Header="Settings">
-                <MenuItem Header="Open Klarf File..." />
-                <MenuItem Header="Open Image Folder..." />
-                <MenuItem Header="Save Image ..." />
+                <MenuItem Header="Zoom..." Foreground="#FF2D2D30"/>
                 <Separator/>
-                <MenuItem Header="Exit" />
+                <MenuItem Header="Exit" Foreground="#FF2D2D30"/>
             </MenuItem>
         </Menu>
 
@@ -64,7 +67,7 @@
         </Grid>
 
         <!-- 하단 상태바 -->
-        <StatusBar Grid.Row="2" Background="#FF007ACC" Height="28">
+        <StatusBar Grid.Row="2" Background="#FF555555" Height="28">
             <StatusBarItem>
                 <TextBlock Text="{Binding StatusMessage}" Foreground="White" FontSize="11"/>
             </StatusBarItem>

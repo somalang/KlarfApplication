@@ -14,29 +14,37 @@
             </Border>
 
             <ToolBar Grid.Row="1" Background="#FF3E3E42" BorderBrush="#FF555555" BorderThickness="0,1">
-                <Button Content="📂 Open" Command="{Binding OpenFileCommand}" ToolTip="Open Klarf File (Ctrl+O)" Padding="8,4"/>
+                <Button Content="📂 Open" Foreground="White" Command="{Binding OpenFileCommand}" ToolTip="Open Klarf File (Ctrl+O)" Padding="8,4"/>
                 <Separator/>
-                <Button Content="🖼️ Images" Command="{Binding OpenImageFolderCommand}" ToolTip="Open Image Folder" Padding="8,4"/>
+                <Button Content="🖼️ Images" Foreground="White" Command="{Binding OpenImageFolderCommand}" ToolTip="Open Image Folder" Padding="8,4"/>
                 <Separator/>
-                <Button Content="🔄" Command="{Binding RefreshCommand}" ToolTip="Refresh (F5)" Padding="8,4"/>
+                <Button Content="🔄 Refresh" Foreground="White" Command="{Binding RefreshCommand}" HorizontalAlignment="Right" ToolTip="Refresh (F5)" Padding="8,4"/>
                 <Separator/>
-                <Button Content="🗑️ Clear" Command="{Binding ClearFilesCommand}" ToolTip="Clear All Files" Padding="8,4"/>
+                <Button Content="🗑️ Clear" Foreground="White" Command="{Binding ClearFilesCommand}" HorizontalAlignment="Right" ToolTip="Clear All Files" Padding="8,4"/>
             </ToolBar>
+            <Grid Grid.Row="2">
+                <TreeView Grid.Row="2"
+              Background="#FF2D2D30"
+              Foreground="White"
+              BorderThickness="0"
+              x:Name="FileTreeView"
+              SelectedItemChanged="FileTreeView_SelectedItemChanged">
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="TreeViewItem">
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="FontSize" Value="11"/>
+                            <Setter Property="Padding" Value="2"/>
+                        </Style>
+                    </TreeView.ItemContainerStyle>
+                </TreeView>
 
-            <TreeView Grid.Row="2"
-                      Background="#FF2D2D30"
-                      Foreground="White"
-                      BorderThickness="0"
-                      x:Name="FileTreeView"
-                      SelectedItemChanged="FileTreeView_SelectedItemChanged">
-                <TreeView.ItemContainerStyle>
-                    <Style TargetType="TreeViewItem">
-                        <Setter Property="Foreground" Value="White"/>
-                        <Setter Property="FontSize" Value="11"/>
-                        <Setter Property="Padding" Value="2"/>
-                    </Style>
-                </TreeView.ItemContainerStyle>
-            </TreeView>
+                <TextBlock Text="No Files" 
+               Foreground="Gray"
+               FontSize="16"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               Visibility="{Binding NoFilesVisibility}"/>
+            </Grid>
         </Grid>
     </Border>
 </UserControl>

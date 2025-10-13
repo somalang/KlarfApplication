@@ -18,7 +18,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Border Grid.Row="0" Background="#FF6B1FB0" Padding="8,5">
+            <Border Grid.Row="0" Background="#73009C" Padding="8,5">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="🔍 Defect Image Viewer"
                                Foreground="White"
@@ -77,10 +77,10 @@
                         </Grid.ColumnDefinitions>
 
                         <StackPanel Grid.Column="0" Orientation="Horizontal">
-                            <Button Content="+" Style="{StaticResource ToolButtonStyle}" Command="{Binding ZoomInCommand}" ToolTip="Zoom In (Ctrl++)"/>
-                            <Button Content="-" Style="{StaticResource ToolButtonStyle}" Command="{Binding ZoomOutCommand}" ToolTip="Zoom Out (Ctrl+-)"/>
-                            <Button Content="⟲" Style="{StaticResource ToolButtonStyle}" Command="{Binding ResetViewCommand}" ToolTip="Reset View (Ctrl+0)"/>
-                            <Button Content="⛶" Style="{StaticResource ToolButtonStyle}" Command="{Binding FitToWindowCommand}" ToolTip="Fit to Window"/>
+                            <Button Content="➕" Style="{StaticResource ToolButtonStyle}" Command="{Binding ZoomInCommand}" ToolTip="Zoom In (Ctrl++)" Background="Transparent" Foreground ="LightGray" BorderBrush="Transparent" BorderThickness="0"/>
+                            <Button Content="➖" Style="{StaticResource ToolButtonStyle}" Command="{Binding ZoomOutCommand}" ToolTip="Zoom Out (Ctrl+-)" Background="Transparent" Foreground ="LightGray" BorderBrush="Transparent" BorderThickness="0"/>
+                            <Button Content="💫" Style="{StaticResource ToolButtonStyle}" Command="{Binding ResetViewCommand}" ToolTip="Reset View (Ctrl+0)" Background="Transparent" Foreground ="LightGray" BorderBrush="Transparent" BorderThickness="0"/>
+                            <Button Content="🔛" Style="{StaticResource ToolButtonStyle}" Command="{Binding FitToWindowCommand}" ToolTip="Fit to Window" Background="Transparent" Foreground ="LightGray" BorderBrush="Transparent" BorderThickness="0"/>
                         </StackPanel>
 
                         <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
