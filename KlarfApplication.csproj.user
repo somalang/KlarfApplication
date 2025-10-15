@@ -2,16 +2,16 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
-    <Compile Update="View\DefectImageViewer.xaml.cs">
+    <Compile Update="View\DefectImageView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="View\DefectInfoViewer.xaml.cs">
+    <Compile Update="View\DefectInfoView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="View\FileListViewer.xaml.cs">
+    <Compile Update="View\FileListView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="View\WaferMapViewer.xaml.cs">
+    <Compile Update="View\WaferMapView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

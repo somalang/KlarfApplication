@@ -13,8 +13,4 @@
     <Content Include="ATI ICON S.ico" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Converter\" />
-  </ItemGroup>
-
 </Project>
