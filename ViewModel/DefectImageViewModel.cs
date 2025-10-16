@@ -1,16 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using KlarfApplication.Model;
 
 namespace KlarfApplication.ViewModel
 {
-    public class DefectImageViewModel
+    public class DefectImageViewModel : ViewModelBase
     {
-        //DefectImage
-        //SelectedDefect
-        //ZoomInCommand
-        //ZoomOutCommand
+        private string _imagePath;
+        public string ImagePath
+        {
+            get => _imagePath;
+            set
+            {
+                _imagePath = value;
+                OnPropertyChanged(nameof(ImagePath));
+            }
+        }
+
+        public void UpdateFromKlarf(KlarfModel klarf)
+        {
+            if (klarf == null || klarf.Defects.Count == 0)
+            {
+                ImagePath = string.Empty;
+                return;
+            }
+
+            ImagePath = klarf.Defects.FirstOrDefault()?.ImagePath ?? string.Empty;
+        }
     }
 }
