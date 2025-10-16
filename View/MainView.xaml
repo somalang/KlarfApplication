@@ -51,10 +51,14 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <views:WaferMapViewer Grid.Row="0" Grid.Column="0" />
-            <views:DefectImageViewer Grid.Row="0" Grid.Column="2" />
-            <views:FileListViewer Grid.Row="2" Grid.Column="0" />
-            <views:DefectInfoViewer Grid.Row="2" Grid.Column="2" />
+            <views:WaferMapViewer Grid.Row="0" Grid.Column="0" 
+                          DataContext="{Binding WaferViewModel}"/>
+            <views:DefectImageViewer Grid.Row="0" Grid.Column="2" 
+                             DataContext="{Binding DefectImageViewModel}"/>
+            <views:FileListViewer Grid.Row="2" Grid.Column="0" 
+                          DataContext="{Binding FileListViewModel}"/>
+            <views:DefectInfoViewer Grid.Row="2" Grid.Column="2" 
+                            DataContext="{Binding DefectInfoViewModel}"/>
 
             <!-- 영역 나누기 사분면 -->
             <GridSplitter Grid.Row="0" Grid.Column="1"
