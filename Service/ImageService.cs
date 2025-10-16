@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KlarfApplication.Service
 {
-    internal class ImageService
+    public class ImageService
     {
     }
 }

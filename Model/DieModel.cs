@@ -1,76 +1,71 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using KlarfApplication.Model;
+﻿using System.Collections.ObjectModel;
 
 namespace KlarfApplication.Model
 {
+    /// <summary>
+    /// 다이(Die) 정보를 나타내는 데이터 모델 클래스.
+    /// 웨이퍼 내 위치(Row, Column), 불량 여부 및 포함된 결함 리스트를 포함합니다.
+    /// </summary>
     public class DieModel : ModelBase
     {
-        // die 위치, 불량 여부, 불량 리스트, 중심 좌표, 선택 여부, 회전 방향
+        #region Fields
+
         private int _row;
         private int _column;
         private double _centerX;
         private double _centerY;
         private bool _isGood;
         private bool _isSelected;
-        private string _orientation; 
-        private ObservableCollection<Defect> _defectsList; 
+        private string _orientation;
+        private ObservableCollection<Defect> _defectsList;
+
+        #endregion
+
+        #region Properties
 
         public int Row
         {
-            get
+            get => _row;
+            set
             {
-                return _row;
-            }
-            set { 
-                _row = value; 
-                OnPropertyChanged(nameof(Row)); 
+                _row = value;
+                OnPropertyChanged(nameof(Row));
             }
         }
 
         public int Column
         {
-            get
+            get => _column;
+            set
             {
-                return _column;
-            }
-            set { 
-                _column = value; 
-                OnPropertyChanged(nameof(Column)); 
+                _column = value;
+                OnPropertyChanged(nameof(Column));
             }
         }
 
         public double CenterX
         {
-            get
+            get => _centerX;
+            set
             {
-                return _centerX;
-            }
-            set { 
-                _centerX = value; 
+                _centerX = value;
                 OnPropertyChanged(nameof(CenterX));
             }
         }
 
         public double CenterY
         {
-            get
+            get => _centerY;
+            set
             {
-                return _centerY;
-            }
-            set { 
-                _centerY = value; 
-                OnPropertyChanged(nameof(CenterY)); 
+                _centerY = value;
+                OnPropertyChanged(nameof(CenterY));
             }
         }
 
         public bool IsGood
         {
-            get
-            {
-                return _isGood;
-            }
+            get => _isGood;
             set
             {
                 _isGood = value;
@@ -80,44 +75,43 @@ namespace KlarfApplication.Model
 
         public bool IsSelected
         {
-            get
+            get => _isSelected;
+            set
             {
-                return _isSelected;
-            }
-            set { 
-                _isSelected = value; 
-                OnPropertyChanged(nameof(IsSelected)); 
+                _isSelected = value;
+                OnPropertyChanged(nameof(IsSelected));
             }
         }
 
         public string Orientation
         {
-            get
+            get => _orientation;
+            set
             {
-                return _orientation;
-            }
-            set { 
-                _orientation = value; 
-                OnPropertyChanged(nameof(Orientation)); 
+                _orientation = value;
+                OnPropertyChanged(nameof(Orientation));
             }
         }
 
         public ObservableCollection<Defect> DefectsList
         {
-            get
+            get => _defectsList;
+            set
             {
-                return _defectsList;
-            }
-            set { 
-                _defectsList = value; 
-                OnPropertyChanged(nameof(DefectsList)); 
+                _defectsList = value;
+                OnPropertyChanged(nameof(DefectsList));
             }
         }
+
+        #endregion
+
+        #region Constructors
 
         public DieModel()
         {
             DefectsList = new ObservableCollection<Defect>();
         }
 
+        #endregion
     }
 }
