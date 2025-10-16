@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace KlarfApplication.Model
 {
@@ -22,9 +23,6 @@ namespace KlarfApplication.Model
 
         #region Properties
 
-        /// <summary>
-        /// 웨이퍼의 전체 지름(mm 단위).
-        /// </summary>
         public double Diameter
         {
             get => _diameter;
@@ -35,9 +33,6 @@ namespace KlarfApplication.Model
             }
         }
 
-        /// <summary>
-        /// 웨이퍼 중심의 X 좌표.
-        /// </summary>
         public double CenterX
         {
             get => _centerX;
@@ -48,9 +43,6 @@ namespace KlarfApplication.Model
             }
         }
 
-        /// <summary>
-        /// 웨이퍼 중심의 Y 좌표.
-        /// </summary>
         public double CenterY
         {
             get => _centerY;
@@ -61,9 +53,6 @@ namespace KlarfApplication.Model
             }
         }
 
-        /// <summary>
-        /// 웨이퍼의 방향 정보 (예: Notch 위치, Flat 방향).
-        /// </summary>
         public string Orientation
         {
             get => _orientation;
@@ -74,9 +63,6 @@ namespace KlarfApplication.Model
             }
         }
 
-        /// <summary>
-        /// 다이의 가로 크기(μm 단위).
-        /// </summary>
         public double DieWidth
         {
             get => _dieWidth;
@@ -87,9 +73,6 @@ namespace KlarfApplication.Model
             }
         }
 
-        /// <summary>
-        /// 다이의 세로 크기(μm 단위).
-        /// </summary>
         public double DieHeight
         {
             get => _dieHeight;
@@ -100,9 +83,6 @@ namespace KlarfApplication.Model
             }
         }
 
-        /// <summary>
-        /// 웨이퍼를 구성하는 다이 리스트.
-        /// </summary>
         public ObservableCollection<DieModel> DiesList
         {
             get => _diesList;
@@ -110,6 +90,21 @@ namespace KlarfApplication.Model
             {
                 _diesList = value;
                 OnPropertyChanged(nameof(DiesList));
+            }
+        }
+
+        /// <summary>
+        /// 전체 다이 중 불량 다이 비율(%)을 반환합니다.
+        /// </summary>
+        public double DefectRate
+        {
+            get
+            {
+                if (DiesList == null || DiesList.Count == 0)
+                    return 0.0;
+
+                int defectDies = DiesList.Count(die => !die.IsGood);
+                return (double)defectDies / DiesList.Count * 100.0;
             }
         }
 
