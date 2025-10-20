@@ -7,12 +7,11 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-
+using Microsoft.WindowsAPICodePack.Dialogs;
 namespace KlarfApplication.ViewModel
 {
     /// <summary>
-    /// 파일 리스트 뷰어의 ViewModel.
-    /// 폴더를 불러오고 트리 구조로 표시하며, 선택/삭제/갱신 기능을 제공합니다.
+    /// 폴더 안의 파일을 트리구조로 보여주는 FileListViewer의 뷰모델
     /// </summary>
     public class FileListViewModel : ViewModelBase
     {
@@ -88,7 +87,7 @@ namespace KlarfApplication.ViewModel
             NoFilesVisibility = Visibility.Visible;
 
             OpenFileCommand = new RelayCommand(OpenFolder);
-            OpenImageFolderCommand = new RelayCommand(OpenFolder); // 같은 기능 사용
+            OpenImageFolderCommand = new RelayCommand(OpenFolder);
             RefreshCommand = new RelayCommand(RefreshFiles);
             ClearFilesCommand = new RelayCommand(ClearFiles);
         }
@@ -98,23 +97,21 @@ namespace KlarfApplication.ViewModel
         #region Private Methods
 
         /// <summary>
-        /// 폴더를 선택하고 모든 파일과 하위 폴더를 트리로 표시합니다.
+        /// 폴더 선택하고 안의 파일들 있으면 트리 구조로 보여주기
         /// </summary>
         private void OpenFolder()
         {
-            var dialog = new OpenFileDialog
+            var dialog = new CommonOpenFileDialog
             {
-                Filter = "All Files (*.*)|*.*",
-                Title = "Select any file inside the folder you want to open",
-                CheckFileExists = true
+                Title = "Select Folder",
+                IsFolderPicker = true
             };
 
-            if (dialog.ShowDialog() == true)
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 try
                 {
-                    string selectedFilePath = dialog.FileName;
-                    string selectedFolder = Path.GetDirectoryName(selectedFilePath);
+                    string selectedFolder = dialog.FileName;
 
                     if (Directory.Exists(selectedFolder))
                     {
@@ -132,7 +129,7 @@ namespace KlarfApplication.ViewModel
         }
 
         /// <summary>
-        /// 파일 리스트를 모두 제거합니다.
+        /// 파일 리스트 모두 제거
         /// </summary>
         private void ClearFiles()
         {
@@ -172,6 +169,9 @@ namespace KlarfApplication.ViewModel
 
                 LoadDirectoryContents(rootNode, folderPath);
                 TreeNodes.Add(rootNode);
+                NoFilesVisibility = TreeNodes.Any() && TreeNodes[0].Children.Any()
+    ? Visibility.Collapsed
+    : Visibility.Visible;
             }
             catch (Exception ex)
             {

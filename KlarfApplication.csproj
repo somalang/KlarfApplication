@@ -6,11 +6,16 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>ATI ICON S.ico</ApplicationIcon>
+	<ApplicationIcon>ATI ICON S.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <Content Include="ATI ICON S.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft-Windows10-APICodePack-Shell" Version="1.1.8" />
+    <PackageReference Include="WindowsAPICodePack.Shell.CommonFileDialogs.Wpf" Version="1.1.5.1" />
   </ItemGroup>
 
 </Project>
