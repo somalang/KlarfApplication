@@ -1,5 +1,6 @@
 ﻿using KlarfApplication.Model;
 using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace KlarfApplication.ViewModel
 {
@@ -13,9 +14,16 @@ namespace KlarfApplication.ViewModel
             {
                 _defects = value;
                 OnPropertyChanged(nameof(Defects));
+                OnPropertyChanged(nameof(NoDefectsVisibility));
             }
         }
-
+        public Visibility NoDefectsVisibility
+        {
+            get
+            {
+                return (Defects == null || Defects.Count == 0) ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
         public void UpdateFromKlarf(KlarfModel klarf)
         {
             if (klarf == null)

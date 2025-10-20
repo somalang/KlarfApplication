@@ -22,17 +22,25 @@
         </Style>
         <!-- DataGrid 헤더/셀 스타일도 로컬 정의 -->
         <Style x:Key="GridHeaderStyle" TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="#FF3E3E42"/>
+            <Setter Property="Background" Value="#FF2D2D30"/>
+            <!-- 헤더 배경도 동일 색 -->
             <Setter Property="Foreground" Value="White"/>
+            <!-- 글씨 흰색 -->
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Padding" Value="8,5"/>
             <Setter Property="BorderBrush" Value="#FF555555"/>
             <Setter Property="BorderThickness" Value="0,0,1,1"/>
         </Style>
+
         <Style x:Key="GridCellStyle" TargetType="DataGridCell">
+            <Setter Property="Background" Value="#FF2D2D30"/>
+            <!-- 셀 배경을 어둡게 -->
+            <Setter Property="Foreground" Value="White"/>
+            <!-- 글씨 흰색 -->
             <Setter Property="BorderBrush" Value="#FF3E3E42"/>
             <Setter Property="Padding" Value="5,3"/>
         </Style>
+
     </UserControl.Resources>
 
     <Border BorderBrush="#FF3E3E42" BorderThickness="2">
@@ -99,18 +107,18 @@
             <!-- 불량 리스트 -->
             <Grid Grid.Row="2">
                 <DataGrid x:Name="DefectDataGrid"
-              AutoGenerateColumns="False"
-              Background="#FF2D2D30"
-              Foreground="White"
-              HeadersVisibility="Column"
-              GridLinesVisibility="All"
-              CanUserAddRows="False"
-              SelectionMode="Single"
-              BorderThickness="0"
-              ColumnHeaderStyle="{StaticResource GridHeaderStyle}"
-              CellStyle="{StaticResource GridCellStyle}"
-              ItemsSource="{Binding Defects}"  
-              SelectionChanged="DefectDataGrid_SelectionChanged">
+          AutoGenerateColumns="False"
+          Background="#FF2D2D30"  
+                    Foreground="White"
+                    HeadersVisibility="Column"
+          GridLinesVisibility="All"
+          CanUserAddRows="False"
+          SelectionMode="Single"
+          BorderThickness="0"
+          ColumnHeaderStyle="{StaticResource GridHeaderStyle}"
+          CellStyle="{StaticResource GridCellStyle}"
+          ItemsSource="{Binding Defects}"  
+          SelectionChanged="DefectDataGrid_SelectionChanged">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="#" Width="50" Binding="{Binding Index}"/>
                         <DataGridTextColumn Header="Defect ID" Width="110" Binding="{Binding DefectId}"/>
