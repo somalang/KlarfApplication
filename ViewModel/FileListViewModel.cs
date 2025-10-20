@@ -87,7 +87,7 @@ namespace KlarfApplication.ViewModel
             NoFilesVisibility = Visibility.Visible;
 
             OpenFileCommand = new RelayCommand(OpenFolder);
-            OpenImageFolderCommand = new RelayCommand(OpenFolder);
+            OpenImageFolderCommand = new RelayCommand(OpenImgFolder);
             RefreshCommand = new RelayCommand(RefreshFiles);
             ClearFilesCommand = new RelayCommand(ClearFiles);
         }
@@ -100,6 +100,34 @@ namespace KlarfApplication.ViewModel
         /// 폴더 선택하고 안의 파일들 있으면 트리 구조로 보여주기
         /// </summary>
         private void OpenFolder()
+        {
+            var dialog = new CommonOpenFileDialog
+            {
+                Title = "Select Folder",
+                IsFolderPicker = true
+            };
+
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                try
+                {
+                    string selectedFolder = dialog.FileName;
+
+                    if (Directory.Exists(selectedFolder))
+                    {
+                        CurrentFolderPath = selectedFolder;
+                        BuildFolderTree(selectedFolder);
+                        NoFilesVisibility = TreeNodes.Any() ? Visibility.Collapsed : Visibility.Visible;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"폴더를 여는 중 오류가 발생했습니다.\n\n{ex.Message}",
+                        "Folder Open Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+        private void OpenImgFolder()
         {
             var dialog = new CommonOpenFileDialog
             {
@@ -169,9 +197,7 @@ namespace KlarfApplication.ViewModel
 
                 LoadDirectoryContents(rootNode, folderPath);
                 TreeNodes.Add(rootNode);
-                NoFilesVisibility = TreeNodes.Any() && TreeNodes[0].Children.Any()
-    ? Visibility.Collapsed
-    : Visibility.Visible;
+                NoFilesVisibility = TreeNodes.Any() && TreeNodes[0].Children.Any() ? Visibility.Collapsed : Visibility.Visible;
             }
             catch (Exception ex)
             {
@@ -222,8 +248,10 @@ namespace KlarfApplication.ViewModel
                         NodeType = GetFileType(extension)
                     };
 
-                    // KLARF 파일이면 추가 정보 표시
-                    if (extension == ".klarf")
+                    // KLARF 파일
+                    string[] klarfExtensions = { ".klarf", ".kla", ".klf", ".000", ".001", ".002" };
+
+                    if (klarfExtensions.Contains(extension))
                     {
                         try
                         {
@@ -250,6 +278,7 @@ namespace KlarfApplication.ViewModel
                                 Header = $"🔲 Dies: {klarf.TotalDies}",
                                 NodeType = TreeNodeType.Info
                             });
+                            fileNode.NodeType = TreeNodeType.KlarfFile;
                         }
                         catch
                         {
@@ -296,8 +325,12 @@ namespace KlarfApplication.ViewModel
         {
             return extension switch
             {
-                ".klarf" => TreeNodeType.KlarfFile,
-                ".png" or ".jpg" or ".jpeg" or ".bmp" or ".gif" or ".tif" or ".tiff" => TreeNodeType.ImageFile,
+                ".klarf" or ".kla" or ".klf" or ".000" or ".001" or ".002"
+                    => TreeNodeType.KlarfFile,
+
+                ".png" or ".jpg" or ".jpeg" or ".bmp" or ".gif" or ".tif" or ".tiff"
+                    => TreeNodeType.ImageFile,
+
                 _ => TreeNodeType.File
             };
         }
