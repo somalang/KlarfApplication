@@ -1,6 +1,7 @@
 ﻿<UserControl x:Class="KlarfApplication.View.WaferMapViewer"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
     <Border BorderBrush="#FF3E3E42" BorderThickness="2">
         <Grid>
             <Grid.RowDefinitions>

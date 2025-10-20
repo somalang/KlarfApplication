@@ -1,13 +1,11 @@
-﻿// View/WaferMapView.xaml.cs
-using KlarfApplication.Model;
-using KlarfApplication.ViewModel;
-using System;
+﻿using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using KlarfApplication.ViewModel;
 
 namespace KlarfApplication.View
 {
@@ -43,7 +41,7 @@ namespace KlarfApplication.View
                 return;
 
             // 1. Wafer 원형 배경 그리기
-            DrawWaferCircle(viewModel.Wafer);
+            DrawWaferCircle();
 
             // 2. Die 좌표 범위 계산
             var minX = viewModel.Dies.Min(d => d.Row);
@@ -67,35 +65,49 @@ namespace KlarfApplication.View
                 double x = (die.Row - minX) * die.Width * scale - (rangeX * die.Width * scale / 2) + offsetX;
                 double y = (die.Column - minY) * die.Height * scale - (rangeY * die.Height * scale / 2) + offsetY;
 
+                // Die 타입에 따라 색상 결정
+                Brush fillBrush;
+                if (die.IsEdge)
+                {
+                    fillBrush = Brushes.DarkGray;
+                }
+                else if (die.IsGood)
+                {
+                    fillBrush = new SolidColorBrush(Color.FromRgb(0x22, 0xAB, 0x28));
+                }
+                else
+                {
+                    fillBrush = new SolidColorBrush(Color.FromRgb(0xE3, 0x04, 0x13));
+                }
+
                 var rect = new Rectangle
                 {
                     Width = die.Width * scale * 0.95,
                     Height = die.Height * scale * 0.95,
-                    Fill = die.IsGood ? Brushes.LimeGreen : Brushes.Red,
+                    Fill = fillBrush,
                     Stroke = Brushes.White,
                     StrokeThickness = 0.5,
-                    Tag = die // Die 정보 저장
+                    Tag = die
                 };
 
                 Canvas.SetLeft(rect, x);
                 Canvas.SetTop(rect, y);
 
-                // 클릭 이벤트
-                rect.MouseLeftButtonDown += Die_MouseLeftButtonDown;
+                rect.MouseLeftButtonDown += Die_Click;
+                rect.MouseEnter += Die_MouseEnter;
+                rect.MouseLeave += Die_MouseLeave;
 
                 WaferMapCanvas.Children.Add(rect);
             }
         }
 
-        private void DrawWaferCircle(WaferModel wafer)
+        private void DrawWaferCircle()
         {
-            if (wafer == null) return;
-
             var circle = new Ellipse
             {
                 Width = CANVAS_SIZE * 0.95,
                 Height = CANVAS_SIZE * 0.95,
-                Fill = Brushes.Transparent,
+                Fill = new SolidColorBrush(Color.FromRgb(0x2D, 0x2D, 0x30)),
                 Stroke = Brushes.Gray,
                 StrokeThickness = 2
             };
@@ -106,20 +118,39 @@ namespace KlarfApplication.View
             WaferMapCanvas.Children.Add(circle);
         }
 
-        private void Die_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void Die_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (sender is Rectangle rect)
+            {
+                rect.StrokeThickness = 2;
+                rect.Stroke = Brushes.Yellow;
+            }
+        }
+
+        private void Die_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (sender is Rectangle rect)
+            {
+                rect.StrokeThickness = 0.5;
+                rect.Stroke = Brushes.White;
+            }
+        }
+
+        private void Die_Click(object sender, MouseButtonEventArgs e)
         {
             if (sender is Rectangle rect && rect.Tag is DieViewModel die)
             {
-                MessageBox.Show($"Die [{die.Row}, {die.Column}]\nDefects: {die.DefectCount}",
-                               "Die Information",
-                               MessageBoxButton.OK,
-                               MessageBoxImage.Information);
+                string message = $"Die Position: [{die.Row}, {die.Column}]\n" +
+                                $"Type: {die.DieType}\n" +
+                                $"Defects: {die.DefectCount}";
+
+                MessageBox.Show(message, "Die Information", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
         private void WaferMapCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            // 캔버스 클릭 처리 (필요시)
+            // 캔버스 클릭 처리
         }
     }
 }
