@@ -85,14 +85,6 @@ namespace KlarfApplication.ViewModel
 
             foreach (var die in klarf.DieMap)
             {
-                // 웨이퍼 중심으로부터의 거리 계산
-                double distanceX = die.Row - centerX;
-                double distanceY = die.Column - centerY;
-                double distanceFromCenter = Math.Sqrt(distanceX * distanceX + distanceY * distanceY);
-
-                // Edge die 판별
-                bool isEdge = distanceFromCenter >= waferRadiusDies * 0.85;
-
                 // 해당 Die에 속한 Defect 개수 계산
                 var defectCount = klarf.Defects.Count(d => d.Row == die.Row && d.Column == die.Column);
 
@@ -105,7 +97,7 @@ namespace KlarfApplication.ViewModel
                     Width = klarf.DiePitchX,
                     Height = klarf.DiePitchY,
                     IsGood = defectCount == 0,
-                    IsEdge = isEdge,
+                    IsEdge = false,
                     DefectCount = defectCount
                 });
             }
@@ -116,7 +108,7 @@ namespace KlarfApplication.ViewModel
             int totalDies = Dies.Count;
             int goodDies = Dies.Count(d => !d.IsEdge && d.IsGood);
             int defectiveDies = Dies.Count(d => !d.IsEdge && !d.IsGood);
-            int edgeDies = Dies.Count(d => d.IsEdge);
+            int edgeDies = 0;
             double yield = totalDies - edgeDies > 0 ? (double)goodDies / (totalDies - edgeDies) * 100 : 0;
 
             WaferMapStats = $"Total: {totalDies} | Good: {goodDies} | Defect: {defectiveDies} | Edge: {edgeDies} | Yield: {yield:F1}%";
@@ -140,7 +132,6 @@ namespace KlarfApplication.ViewModel
         {
             get
             {
-                if (IsEdge) return "Edge";
                 if (IsGood) return "Good";
                 return "Defective";
             }

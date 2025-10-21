@@ -79,14 +79,21 @@
                         <StackPanel Grid.Column="0" Orientation="Horizontal">
                             <Button Content="➕" Style="{StaticResource ToolButtonStyle}" Command="{Binding ZoomInCommand}" ToolTip="Zoom In (Ctrl++)" Background="Transparent" Foreground ="LightGray" BorderBrush="Transparent" BorderThickness="0"/>
                             <Button Content="➖" Style="{StaticResource ToolButtonStyle}" Command="{Binding ZoomOutCommand}" ToolTip="Zoom Out (Ctrl+-)" Background="Transparent" Foreground ="LightGray" BorderBrush="Transparent" BorderThickness="0"/>
-                            <Button Content="💫" Style="{StaticResource ToolButtonStyle}" Command="{Binding ResetViewCommand}" ToolTip="Reset View (Ctrl+0)" Background="Transparent" Foreground ="LightGray" BorderBrush="Transparent" BorderThickness="0"/>
+                            <Button Content="🔃" Style="{StaticResource ToolButtonStyle}" Command="{Binding ResetViewCommand}" ToolTip="Reset View (Ctrl+0)" Background="Transparent" Foreground ="LightGray" BorderBrush="Transparent" BorderThickness="0"/>
                             <Button Content="🔛" Style="{StaticResource ToolButtonStyle}" Command="{Binding FitToWindowCommand}" ToolTip="Fit to Window" Background="Transparent" Foreground ="LightGray" BorderBrush="Transparent" BorderThickness="0"/>
                         </StackPanel>
 
                         <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                             <TextBlock Text="Zoom:" Foreground="White" VerticalAlignment="Center" Margin="0,0,10,0"/>
                             <TextBlock Text="{Binding ZoomLevel, StringFormat={}{0:F0}%}" Foreground="Cyan" VerticalAlignment="Center" FontWeight="Bold" MinWidth="50"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0">
+                                <Button Content="➕" Padding="5"></Button>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button Content="➖" Padding="5"></Button>
+                            </StackPanel>
                         </StackPanel>
+                        
                     </Grid>
 
                     <!-- 밝기 -->
