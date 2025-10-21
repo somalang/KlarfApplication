@@ -57,7 +57,11 @@ namespace KlarfApplication.Service
                 }
                 else if (line.StartsWith("InspectionStationID"))
                 {
-                    klarf.InspectionStationId = GetQuotedValue(line);
+                    var stationIds = System.Text.RegularExpressions.Regex.Matches(line, "\"(.*?)\"")
+                        .Cast<System.Text.RegularExpressions.Match>()
+                        .Select(m => m.Groups[1].Value)
+                        .Where(s => !string.IsNullOrEmpty(s));
+                    klarf.InspectionStationId = string.Join(" / ", stationIds);
                 }
                 else if (line.StartsWith("SampleType"))
                 {
@@ -207,7 +211,6 @@ namespace KlarfApplication.Service
         #region Private Methods
 
         /// <summary>
-        /// 결함 데이터를 파싱하여 KlarfModel에 추가합니다.
         /// DefectList 형식: DEFECTID XREL YREL XINDEX YINDEX XSIZE YSIZE DEFECTAREA DSIZE CLASSNUMBER ...
         /// </summary>
         private static void ParseDefectLine(string line, KlarfModel klarf)

@@ -164,6 +164,7 @@ namespace KlarfApplication.ViewModel
             TreeNodes.Clear();
             CurrentFolderPath = null;
             NoFilesVisibility = Visibility.Visible;
+            SelectedFile = null;
         }
 
         /// <summary>

@@ -10,7 +10,7 @@ namespace KlarfApplication.View
         public FileListViewer()
         {
             InitializeComponent();
-            DataContext = new FileListViewModel();
+            //DataContext = new FileListViewModel();
         }
 
         private void FileTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -35,13 +35,13 @@ namespace KlarfApplication.View
                                     MessageBoxButton.OK, MessageBoxImage.Warning);
 
                     // 선택 클리어 (MainViewModel이 감지하여 다른 뷰들도 초기화)
-                    viewModel.SelectedFile = null;
+                    //viewModel.SelectedFile = null;
                 }
                 // 폴더나 정보 노드를 클릭한 경우
                 else
                 {
                     // 선택 클리어
-                    viewModel.SelectedFile = null;
+                    //viewModel.SelectedFile = null;
                 }
 
                 // 파일 경로 출력 (디버깅용)

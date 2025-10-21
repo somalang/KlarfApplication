@@ -148,19 +148,19 @@ namespace KlarfApplication.View
 
         private void Die_Click(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Rectangle rect && rect.Tag is DieViewModel die)
+            if (DataContext is WaferViewModel viewModel && sender is Rectangle rect && rect.Tag is DieViewModel die)
             {
-                string message = $"Die Position: [{die.Row}, {die.Column}]\n" +
-                                $"Type: {die.DieType}\n" +
-                                $"Defects: {die.DefectCount}";
-
-                MessageBox.Show(message, "Die Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                viewModel.SelectedDie = die;
             }
         }
 
         private void WaferMapCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             // 캔버스 클릭 처리
+            if (DataContext is WaferViewModel viewModel && e.OriginalSource is Canvas)
+            {
+                viewModel.SelectedDie = null;
+            }
         }
     }
 }

@@ -12,6 +12,7 @@ namespace KlarfApplication.ViewModel
         private ObservableCollection<DieViewModel> _dies;
         private string _waferMapStats;
         private Visibility _noImageVisibility = Visibility.Visible;
+        private DieViewModel _selectedDie;
 
         public WaferModel Wafer
         {
@@ -52,7 +53,18 @@ namespace KlarfApplication.ViewModel
                 OnPropertyChanged(nameof(NoImageVisibility));
             }
         }
-
+        public DieViewModel SelectedDie
+        {
+            get => _selectedDie;
+            set
+            {
+                if (_selectedDie != value)
+                {
+                    _selectedDie = value;
+                    OnPropertyChanged(nameof(SelectedDie));
+                }
+            }
+        }
         public void UpdateFromKlarf(KlarfModel klarf)
         {
             if (klarf == null || !klarf.IsParsed)

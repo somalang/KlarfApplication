@@ -52,6 +52,7 @@ namespace KlarfApplication.ViewModel
 
             // FileListViewModel에서 파일 선택 시 MainViewModel이 감지
             FileListViewModel.PropertyChanged += OnFileListSelectionChanged;
+            WaferViewModel.PropertyChanged += OnWaferViewModelPropertyChanged;
         }
 
         #endregion
@@ -65,7 +66,15 @@ namespace KlarfApplication.ViewModel
                 SelectedKlarf = FileListViewModel.SelectedFile;
             }
         }
-
+        private void OnWaferViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // SelectedDie 속성이 변경되었으면
+            if (e.PropertyName == nameof(WaferViewModel.SelectedDie))
+            {
+                // WaferVM의 선택된 Die를 DefectInfoVM으로 전달
+                DefectInfoViewModel.SelectedDie = WaferViewModel.SelectedDie;
+            }
+        }
         private void UpdateChildViewModels()
         {
             WaferViewModel.UpdateFromKlarf(SelectedKlarf);

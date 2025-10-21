@@ -82,6 +82,9 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -91,16 +94,61 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="File Name:" Style="{StaticResource InfoLabelStyle}"/>
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding FileName}" Style="{StaticResource InfoValueStyle}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding CurrentKlarfFile.FileName}" Style="{StaticResource InfoValueStyle}"/>
 
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Inspection Date:" Style="{StaticResource InfoLabelStyle}"/>
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding InspectionDate}" Style="{StaticResource InfoValueStyle}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding CurrentKlarfFile.ResultTimestamp}" Style="{StaticResource InfoValueStyle}"/>
 
                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Wafer ID:" Style="{StaticResource InfoLabelStyle}"/>
-                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding WaferId}" Style="{StaticResource InfoValueStyle}"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding CurrentKlarfFile.WaferId}" Style="{StaticResource InfoValueStyle}"/>
 
                     <TextBlock Grid.Row="3" Grid.Column="0" Text="Device ID:" Style="{StaticResource InfoLabelStyle}"/>
-                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding DeviceId}" Style="{StaticResource InfoValueStyle}"/>
+                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding CurrentKlarfFile.InspectionStationId}" Style="{StaticResource InfoValueStyle}"/>
+
+                    <Grid Grid.Row="0" Grid.Column="3" Grid.RowSpan="4" Grid.ColumnSpan="2" 
+                          Visibility="{Binding SelectedDieVisibility}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Grid.Column="3" Grid.RowSpan="4" Grid.ColumnSpan="2" 
+                          Visibility="{Binding SelectedDieVisibility}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Die Position:" Style="{StaticResource InfoLabelStyle}"/>
+                            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                                <TextBlock Text="[" Style="{StaticResource InfoValueStyle}" Margin="10,2,0,2"/>
+                                <TextBlock Text="{Binding SelectedDie.Row}" Style="{StaticResource InfoValueStyle}" Margin="0,2"/>
+                                <TextBlock Text=", " Style="{StaticResource InfoValueStyle}" Margin="0,2"/>
+                                <TextBlock Text="{Binding SelectedDie.Column}" Style="{StaticResource InfoValueStyle}" Margin="0,2"/>
+                                <TextBlock Text="]" Style="{StaticResource InfoValueStyle}" Margin="0,2"/>
+                            </StackPanel>
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Die Type:" Style="{StaticResource InfoLabelStyle}"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedDie.DieType}" Style="{StaticResource InfoValueStyle}"/>
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Defect Count:" Style="{StaticResource InfoLabelStyle}"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SelectedDie.DefectCount}" Style="{StaticResource InfoValueStyle}"/>
+
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Show Die:" Style="{StaticResource InfoLabelStyle}"/>
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SelectedDie.Show}" Style="{StaticResource InfoValueStyle}"/>
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Border>
 
