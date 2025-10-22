@@ -1,13 +1,14 @@
 ﻿using KlarfApplication.Model;
 using KlarfApplication.Service;
-using Microsoft.Win32;
+using Microsoft.Win32; // ⭐️ CommonOpenFileDialog 대신 OpenFileDialog를 사용
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using Microsoft.WindowsAPICodePack.Dialogs;
+using Microsoft.WindowsAPICodePack.Dialogs; // (OpenFolder에서 여전히 사용)
+
 namespace KlarfApplication.ViewModel
 {
     /// <summary>
@@ -87,7 +88,7 @@ namespace KlarfApplication.ViewModel
             NoFilesVisibility = Visibility.Visible;
 
             OpenFileCommand = new RelayCommand(OpenFolder);
-            OpenImageFolderCommand = new RelayCommand(OpenImgFolder);
+            OpenImageFolderCommand = new RelayCommand(OpenImgFiles); // ⭐️ [수정] 메서드 이름 변경
             RefreshCommand = new RelayCommand(RefreshFiles);
             ClearFilesCommand = new RelayCommand(ClearFiles);
         }
@@ -97,7 +98,7 @@ namespace KlarfApplication.ViewModel
         #region Private Methods
 
         /// <summary>
-        /// 폴더 선택하고 안의 파일들 있으면 트리 구조로 보여주기
+        /// (Klarf용) 폴더 선택하고 안의 파일들 있으면 트리 구조로 보여주기
         /// </summary>
         private void OpenFolder()
         {
@@ -127,34 +128,66 @@ namespace KlarfApplication.ViewModel
                 }
             }
         }
-        private void OpenImgFolder()
+
+        /// <summary>
+        /// ⭐️ [수정] "폴더"가 아닌 "이미지 파일"들을 선택해서 트리로 구성합니다.
+        /// </summary>
+        private void OpenImgFiles()
         {
-            var dialog = new CommonOpenFileDialog
+            // 1. 폴더 선택기(CommonOpenFileDialog) 대신 파일 선택기(OpenFileDialog)를 사용합니다.
+            var dialog = new OpenFileDialog
             {
-                Title = "Select Folder",
-                IsFolderPicker = true
+                Title = "Select Image(s)",
+                Filter = "Image Files (*.jpg;*.png;*.tif;*.tiff)|*.jpg;*.png;*.tif;*.tiff|All files (*.*)|*.*",
+                Multiselect = true // 2. 여러 파일 선택을 허용합니다.
             };
 
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            if (dialog.ShowDialog() == true)
             {
                 try
                 {
-                    string selectedFolder = dialog.FileName;
+                    // 3. 기존 트리를 초기화합니다.
+                    TreeNodes.Clear();
+                    CurrentFolderPath = null; // 특정 폴더에 묶인 것이 아닙니다.
 
-                    if (Directory.Exists(selectedFolder))
+                    // 4. 선택된 파일들을 보여줄 부모 노드를 하나 만듭니다.
+                    var rootNode = new TreeNodeItem
                     {
-                        CurrentFolderPath = selectedFolder;
-                        BuildFolderTree(selectedFolder);
-                        NoFilesVisibility = TreeNodes.Any() ? Visibility.Collapsed : Visibility.Visible;
+                        Header = "🖼️ Selected Images",
+                        IsExpanded = true,
+                        NodeType = TreeNodeType.Folder
+                    };
+
+                    // 5. dialog.FileNames는 선택된 "모든 파일의 경로 배열"입니다.
+                    foreach (string filePath in dialog.FileNames)
+                    {
+                        string extension = Path.GetExtension(filePath).ToLower();
+
+                        // 6. 각 파일을 트리 노드로 만듭니다.
+                        var fileNode = new TreeNodeItem
+                        {
+                            Header = $"{GetFileIcon(extension)} {Path.GetFileName(filePath)}",
+                            FullPath = filePath,
+                            NodeType = GetFileType(extension)
+                        };
+
+                        // 7. 부모 노드의 자식으로 추가합니다.
+                        rootNode.Children.Add(fileNode);
                     }
+
+                    // 8. 완성된 부모 노드를 TreeView에 추가합니다.
+                    TreeNodes.Add(rootNode);
+
+                    NoFilesVisibility = TreeNodes.Any() ? Visibility.Collapsed : Visibility.Visible;
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"폴더를 여는 중 오류가 발생했습니다.\n\n{ex.Message}",
-                        "Folder Open Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"이미지를 로드하는 중 오류가 발생했습니다.\n\n{ex.Message}",
+                        "Image Load Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
+
 
         /// <summary>
         /// 파일 리스트 모두 제거
@@ -169,6 +202,7 @@ namespace KlarfApplication.ViewModel
 
         /// <summary>
         /// 파일 리스트를 새로 고칩니다.
+        /// (Klarf 폴더가 열려있을 때만 작동)
         /// </summary>
         private void RefreshFiles()
         {
@@ -214,7 +248,7 @@ namespace KlarfApplication.ViewModel
         {
             try
             {
-                // 하위 폴더 추가
+                // (이하 로직은 기존과 동일)
                 var subDirectories = Directory.GetDirectories(directoryPath)
                     .OrderBy(d => Path.GetFileName(d));
 
@@ -228,12 +262,10 @@ namespace KlarfApplication.ViewModel
                         NodeType = TreeNodeType.Folder
                     };
 
-                    // 하위 폴더도 재귀적으로 로드
                     LoadDirectoryContents(dirNode, subDir);
                     parentNode.Children.Add(dirNode);
                 }
 
-                // 파일 추가
                 var files = Directory.GetFiles(directoryPath)
                     .OrderBy(f => Path.GetFileName(f));
 
@@ -249,7 +281,6 @@ namespace KlarfApplication.ViewModel
                         NodeType = GetFileType(extension)
                     };
 
-                    // KLARF 파일
                     string[] klarfExtensions = { ".klarf", ".kla", ".klf", ".000", ".001", ".002" };
 
                     if (klarfExtensions.Contains(extension))
@@ -283,7 +314,6 @@ namespace KlarfApplication.ViewModel
                         }
                         catch
                         {
-                            // KLARF 파일 파싱 실패 시 무시
                         }
                     }
 
@@ -292,7 +322,6 @@ namespace KlarfApplication.ViewModel
             }
             catch (UnauthorizedAccessException)
             {
-                // 접근 권한 없는 폴더는 무시
                 parentNode.Children.Add(new TreeNodeItem
                 {
                     Header = "🔒 Access Denied",

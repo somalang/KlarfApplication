@@ -28,8 +28,13 @@
                 <MenuItem Header="Exit" Foreground="#FF2D2D30"/>
             </MenuItem>
             <MenuItem Header="View" >
+                <MenuItem Header="Show all defects list" Foreground="#FF2D2D30"/>
+                <Separator/>
                 <MenuItem Header="Log..." Foreground="#FF2D2D30"/>
                 <MenuItem Header="Mode..." Foreground="#FF2D2D30"/>
+            </MenuItem>
+            <MenuItem Header="Generate">
+                <MenuItem Header="make report" Foreground="#FF2D2D30"/>
             </MenuItem>
             <MenuItem Header="Settings">
                 <MenuItem Header="Zoom..." Foreground="#FF2D2D30"/>

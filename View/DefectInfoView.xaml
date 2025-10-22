@@ -20,12 +20,9 @@
             <Setter Property="FontSize" Value="11"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
-        <!-- DataGrid 헤더/셀 스타일도 로컬 정의 -->
         <Style x:Key="GridHeaderStyle" TargetType="DataGridColumnHeader">
             <Setter Property="Background" Value="#FF2D2D30"/>
-            <!-- 헤더 배경도 동일 색 -->
             <Setter Property="Foreground" Value="White"/>
-            <!-- 글씨 흰색 -->
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Padding" Value="8,5"/>
             <Setter Property="BorderBrush" Value="#FF555555"/>
@@ -34,9 +31,7 @@
 
         <Style x:Key="GridCellStyle" TargetType="DataGridCell">
             <Setter Property="Background" Value="#FF2D2D30"/>
-            <!-- 셀 배경을 어둡게 -->
             <Setter Property="Foreground" Value="White"/>
-            <!-- 글씨 흰색 -->
             <Setter Property="BorderBrush" Value="#FF3E3E42"/>
             <Setter Property="Padding" Value="5,3"/>
         </Style>
@@ -47,16 +42,11 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <!-- 헤더 -->
                 <RowDefinition Height="Auto"/>
-                <!-- 샘플 정보 -->
                 <RowDefinition Height="*"/>
-                <!-- 불량 리스트 -->
                 <RowDefinition Height="Auto"/>
-                <!-- 네비게이션 -->
             </Grid.RowDefinitions>
 
-            <!-- 헤더 -->
             <Border Grid.Row="0" Background="#9C030D" Padding="8,5">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="📊 Defect Information"
@@ -72,7 +62,6 @@
                 </StackPanel>
             </Border>
 
-            <!-- 샘플 정보 -->
             <Border Grid.Row="1"
                     Background="#FF252526"
                     Padding="12,8"
@@ -152,7 +141,6 @@
                 </Grid>
             </Border>
 
-            <!-- 불량 리스트 -->
             <Grid Grid.Row="2">
                 <DataGrid x:Name="DefectDataGrid"
                           AutoGenerateColumns="False"
@@ -181,60 +169,83 @@
                 </DataGrid>
 
                 <TextBlock Text="No Defects" 
-               Foreground="Gray"
-               FontSize="16"
-               HorizontalAlignment="Center"
-               VerticalAlignment="Center"
-               Visibility="{Binding NoDefectsVisibility}"/>
+                           Foreground="Gray"
+                           FontSize="16"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Visibility="{Binding NoDefectsVisibility}"/>
             </Grid>
-            <!-- 네비게이션 -->
+
             <Border Grid.Row="3"
                     Background="#FF252526"
                     Padding="10,8"
                     BorderBrush="#FF3E3E42"
                     BorderThickness="0,1,0,0">
+
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="20"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-                    <!-- Die 네비게이션 -->
-                    <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left">
-                        <TextBlock Text="Die:" Foreground="Cyan" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,10,0"/>
-                        <Button Content="|◀◀" Style="{StaticResource NavigationButtonStyle}" Command="{Binding FirstDieCommand}" ToolTip="First Die" BorderBrush="Transparent" BorderThickness="0" Foreground ="LightGray" Background="Transparent"/>
-                        <Button Content="◀"    Style="{StaticResource NavigationButtonStyle}" Command="{Binding PreviousDieCommand}" ToolTip="Previous Die" BorderBrush="Transparent" BorderThickness="0" Foreground ="LightGray" Background="Transparent"/>
-                        <Border Background="#FF3E3E42" Padding="10,5" Margin="5,0" CornerRadius="3">
-                            <TextBlock Text="{Binding CurrentDieInfo}"
-                                       Foreground="White"
-                                       VerticalAlignment="Center"
-                                       FontWeight="Bold"
-                                       MinWidth="60"
-                                       TextAlignment="Center"/>
-                        </Border>
-                        <Button Content="▶"    Style="{StaticResource NavigationButtonStyle}" Command="{Binding NextDieCommand}" ToolTip="Next Die" BorderBrush="Transparent" BorderThickness="0" Foreground ="LightGray" Background="Transparent"/>
-                        <Button Content="▶▶|"  Style="{StaticResource NavigationButtonStyle}" Command="{Binding LastDieCommand}" ToolTip="Last Die" BorderBrush="Transparent" BorderThickness="0" Foreground ="LightGray" Background="Transparent"/>
-                    </StackPanel>
-
-                    <!-- Defect 네비게이션 -->
-                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <TextBlock Text="Defect:" Foreground="Orange" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,10,0"/>
-                        <Button Content="|◀◀" Style="{StaticResource NavigationButtonStyle}" Command="{Binding FirstDefectCommand}" ToolTip="First Defect" BorderBrush="Transparent" BorderThickness="0" Foreground ="LightGray" Background="Transparent"/>
-                        <Button Content="◀"    Style="{StaticResource NavigationButtonStyle}" Command="{Binding PreviousDefectCommand}" ToolTip="Previous Defect" BorderBrush="Transparent" BorderThickness="0" Foreground ="LightGray" Background="Transparent"/>
-                        <Border Background="#FF3E3E42" Padding="10,5" Margin="5,0" CornerRadius="3">
-                            <TextBlock Text="{Binding CurrentDefectInfo}"
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,5">
+                        <TextBlock Text="All Dies:" Foreground="LightGreen" VerticalAlignment="Center" FontWeight="Bold" Margin="42,0,10,0"/>
+                        <Button Content="|◀◀" Style="{StaticResource NavigationButtonStyle}" Command="{Binding FirstAllDieCommand}" ToolTip="First Die on Wafer" BorderBrush="Transparent" BorderThickness="0" Foreground ="LightGray" Background="Transparent"/>
+                        <Button Content="◀"    Style="{StaticResource NavigationButtonStyle}" Command="{Binding PreviousAllDieCommand}" ToolTip="Previous Die on Wafer" BorderBrush="Transparent" BorderThickness="0" Foreground ="LightGray" Background="Transparent"/>
+                        <Border Background="#FF3E3E42" Padding="5,5" Margin="5,0" CornerRadius="3">
+                            <TextBlock Text="{Binding CurrentAllDieInfo}"
                                        Foreground="White"
                                        VerticalAlignment="Center"
                                        FontWeight="Bold"
                                        MinWidth="70"
                                        TextAlignment="Center"/>
                         </Border>
-                        <Button Content="▶"    Style="{StaticResource NavigationButtonStyle}" Command="{Binding NextDefectCommand}" ToolTip="Next Defect" BorderBrush="Transparent" BorderThickness="0" Foreground ="LightGray" Background="Transparent"/>
-                        <Button Content="▶▶|"  Style="{StaticResource NavigationButtonStyle}" Command="{Binding LastDefectCommand}" ToolTip="Last Defect" BorderBrush="Transparent" BorderThickness="0" Foreground ="LightGray" Background="Transparent"/>
+                        <Button Content="▶"    Style="{StaticResource NavigationButtonStyle}" Command="{Binding NextAllDieCommand}" ToolTip="Next Die on Wafer" BorderBrush="Transparent" BorderThickness="0" Foreground ="LightGray" Background="Transparent"/>
+                        <Button Content="▶▶|" Style="{StaticResource NavigationButtonStyle}" Command="{Binding LastAllDieCommand}" ToolTip="Last Die on Wafer" BorderBrush="Transparent" BorderThickness="0" Foreground ="LightGray" Background="Transparent"/>
                     </StackPanel>
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left">
+                            <TextBlock Text="defects per die:" Foreground="Cyan" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,10,0"/>
+                            <Button Content="|◀◀" Style="{StaticResource NavigationButtonStyle}" Command="{Binding FirstDieCommand}" ToolTip="First Defect in Die" BorderBrush="Transparent" BorderThickness="0" Foreground ="LightGray" Background="Transparent"/>
+                            <Button Content="◀"    Style="{StaticResource NavigationButtonStyle}" Command="{Binding PreviousDieCommand}" ToolTip="Previous Defect in Die" BorderBrush="Transparent" BorderThickness="0" Foreground ="LightGray" Background="Transparent"/>
+                            <Border Background="#FF3E3E42" Padding="10,5" Margin="5,0" CornerRadius="3">
+                                <TextBlock Text="{Binding CurrentDieInfo}"
+                                           Foreground="White"
+                                           VerticalAlignment="Center"
+                                           FontWeight="Bold"
+                                           MinWidth="60"
+                                           TextAlignment="Center"/>
+                            </Border>
+                            <Button Content="▶"    Style="{StaticResource NavigationButtonStyle}" Command="{Binding NextDieCommand}" ToolTip="Next Defect in Die" BorderBrush="Transparent" BorderThickness="0" Foreground ="LightGray" Background="Transparent"/>
+                            <Button Content="▶▶|" Style="{StaticResource NavigationButtonStyle}" Command="{Binding LastDieCommand}" ToolTip="Last Defect in Die" BorderBrush="Transparent" BorderThickness="0" Foreground ="LightGray" Background="Transparent"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <TextBlock Text="die with defects:" Foreground="Orange" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,10,0"/>
+                            <Button Content="|◀◀" Style="{StaticResource NavigationButtonStyle}" Command="{Binding FirstDefectCommand}" ToolTip="First Defective Die" BorderBrush="Transparent" BorderThickness="0" Foreground ="LightGray" Background="Transparent"/>
+                            <Button Content="◀"    Style="{StaticResource NavigationButtonStyle}" Command="{Binding PreviousDefectCommand}" ToolTip="Previous Defective Die" BorderBrush="Transparent" BorderThickness="0" Foreground ="LightGray" Background="Transparent"/>
+                            <Border Background="#FF3E3E42" Padding="10,5" Margin="5,0" CornerRadius="3">
+                                <TextBlock Text="{Binding CurrentDefectInfo}"
+                                           Foreground="White"
+                                           VerticalAlignment="Center"
+                                           FontWeight="Bold"
+                                           MinWidth="70"
+                                           TextAlignment="Center"/>
+                            </Border>
+                            <Button Content="▶"    Style="{StaticResource NavigationButtonStyle}" Command="{Binding NextDefectCommand}" ToolTip="Next Defective Die" BorderBrush="Transparent" BorderThickness="0" Foreground ="LightGray" Background="Transparent"/>
+                            <Button Content="▶▶|" Style="{StaticResource NavigationButtonStyle}" Command="{Binding LastDefectCommand}" ToolTip="Last Defective Die" BorderBrush="Transparent" BorderThickness="0" Foreground ="LightGray" Background="Transparent"/>
+                        </StackPanel>
+                    </Grid>
+
                 </Grid>
             </Border>
+
         </Grid>
     </Border>
 </UserControl>
