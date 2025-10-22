@@ -65,7 +65,11 @@ namespace KlarfApplication.Service
                 }
                 else if (line.StartsWith("SampleType"))
                 {
-                    klarf.SampleType = line.Split(' ')[1].TrimEnd(';');
+                    var parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    if (parts.Length >= 2)
+                    {
+                        klarf.SampleType = parts[1].TrimEnd(';');
+                    }
                 }
                 else if (line.StartsWith("LotID"))
                 {
@@ -121,6 +125,63 @@ namespace KlarfApplication.Service
                     klarf.TiffFileName = line.Split(' ', StringSplitOptions.RemoveEmptyEntries)
                         .Skip(1).FirstOrDefault()?.TrimEnd(';') ?? "";
                 }
+
+                // [추가] 새로운 헤더 필드 파싱 시작
+                else if (line.StartsWith("TiffSpec"))
+                {
+                    var parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    if (parts.Length >= 3)
+                    {
+                        klarf.TiffSpec = $"{parts[1]} {parts[2].TrimEnd(';')}";
+                    }
+                }
+                else if (line.StartsWith("FileTimestamp"))
+                {
+                    klarf.FileTimestamp = ParseTimestamp(line);
+                }
+                else if (line.StartsWith("SetupID"))
+                {
+                    klarf.SetupId = GetQuotedValue(line); // "Recipe"
+                }
+                else if (line.StartsWith("StepID"))
+                {
+                    klarf.StepId = GetQuotedValue(line); // "Recipe"
+                }
+                else if (line.StartsWith("SampleOrientationMarkType"))
+                {
+                    var parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    if (parts.Length >= 2)
+                    {
+                        klarf.SampleOrientationMarkType = parts[1].TrimEnd(';');
+                    }
+                }
+                else if (line.StartsWith("DieOrigin"))
+                {
+                    var parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    if (parts.Length >= 3)
+                    {
+                        klarf.DieOriginX = double.Parse(parts[1], CultureInfo.InvariantCulture);
+                        klarf.DieOriginY = double.Parse(parts[2].TrimEnd(';'), CultureInfo.InvariantCulture);
+                    }
+                }
+                else if (line.StartsWith("SampleCenterLocation"))
+                {
+                    var parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    if (parts.Length >= 3)
+                    {
+                        klarf.SampleCenterX = double.Parse(parts[1], CultureInfo.InvariantCulture);
+                        klarf.SampleCenterY = double.Parse(parts[2].TrimEnd(';'), CultureInfo.InvariantCulture);
+                    }
+                }
+                else if (line.StartsWith("InspectionTest"))
+                {
+                    var parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    if (parts.Length >= 2)
+                    {
+                        klarf.InspectionTest = int.Parse(parts[1].TrimEnd(';'));
+                    }
+                }
+                // [추가] 새로운 헤더 필드 파싱 끝
 
                 // 🧩 Sample Test Plan
                 else if (line.StartsWith("SampleTestPlan"))
@@ -188,7 +249,7 @@ namespace KlarfApplication.Service
                         defectLineBuffer.Append(line);
                         defectLineBuffer.Append(" ");
 
-                        // 다음 줄이 숫자로 시작하면 defect 완료
+                        // 다음 줄이 숫자로 시작하면 defect 완료 (기존 로직 유지)
                         if (i + 1 < lines.Length)
                         {
                             var nextLine = lines[i + 1].Trim();
@@ -211,25 +272,45 @@ namespace KlarfApplication.Service
         #region Private Methods
 
         /// <summary>
-        /// DefectList 형식: DEFECTID XREL YREL XINDEX YINDEX XSIZE YSIZE DEFECTAREA DSIZE CLASSNUMBER ...
+        /// [수정] DefectRecordSpec 17... 에 맞게 파싱 로직을 변경합니다.
+        /// 0:DEFECTID 1:XREL 2:YREL 3:XINDEX 4:YINDEX 5:XSIZE 6:YSIZE 7:DEFECTAREA
+        /// 8:DSIZE 9:CLASSNUMBER 10:TEST 11:CLUSTERNUMBER 12:ROUGHBINNUMBER
+        /// 13:FINEBINNUMBER 14:REVIEWSAMPLE 15:IMAGECOUNT 16:IMAGELIST
         /// </summary>
         private static void ParseDefectLine(string line, KlarfModel klarf)
         {
             var parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length < 10)
+
+            // [수정] 필드 개수 17개로 변경
+            if (parts.Length < 17)
                 return;
 
             try
             {
                 var defect = new Defect
                 {
-                    DefectId = parts[0],
-                    XCoord = double.Parse(parts[1], CultureInfo.InvariantCulture),
-                    YCoord = double.Parse(parts[2], CultureInfo.InvariantCulture),
-                    Row = int.Parse(parts[3]),
-                    Column = int.Parse(parts[4]),
-                    Size = double.Parse(parts[8], CultureInfo.InvariantCulture),
-                    DefectType = parts.Length > 9 ? parts[9] : "0"
+                    DefectId = parts[0],  // 0: DEFECTID
+                    XCoord = double.Parse(parts[1], CultureInfo.InvariantCulture), // 1: XREL
+                    YCoord = double.Parse(parts[2], CultureInfo.InvariantCulture), // 2: YREL
+                    Row = int.Parse(parts[3]),    // 3: XINDEX
+                    Column = int.Parse(parts[4]), // 4: YINDEX
+
+                    // [추가]
+                    XSize = double.Parse(parts[5], CultureInfo.InvariantCulture), // 5: XSIZE
+                    YSize = double.Parse(parts[6], CultureInfo.InvariantCulture), // 6: YSIZE
+                    DefectArea = double.Parse(parts[7], CultureInfo.InvariantCulture), // 7: DEFECTAREA
+
+                    Size = double.Parse(parts[8], CultureInfo.InvariantCulture), // 8: DSIZE
+                    DefectType = parts[9], // 9: CLASSNUMBER
+
+                    // [추가]
+                    Test = int.Parse(parts[10]), // 10: TEST
+                    ClusterNumber = int.Parse(parts[11]), // 11: CLUSTERNUMBER
+                    RoughBinNumber = int.Parse(parts[12]), // 12: ROUGHBINNUMBER
+                    FineBinNumber = int.Parse(parts[13]), // 13: FINEBINNUMBER
+                    ReviewSample = int.Parse(parts[14]), // 14: REVIEWSAMPLE
+                    ImageCount = int.Parse(parts[15]), // 15: IMAGECOUNT
+                    ImageList = parts[16].TrimEnd(';') // 16: IMAGELIST
                 };
 
                 klarf.Defects.Add(defect);
@@ -265,7 +346,7 @@ namespace KlarfApplication.Service
             {
                 string dateStr = $"{parts[1]} {parts[2].TrimEnd(';')}";
                 if (DateTime.TryParseExact(dateStr,
-                    new[] { "MM-dd-yyyy HH:mm:ss", "dd-MM-yyyy HH:mm:ss" },
+                    new[] { "MM-dd-yyyy HH:mm:ss", "dd-MM-yyyy HH:mm:ss" }, // 다양한 형식 지원
                     CultureInfo.InvariantCulture,
                     DateTimeStyles.None,
                     out DateTime result))

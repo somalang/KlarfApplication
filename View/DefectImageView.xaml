@@ -45,6 +45,9 @@
                                 MouseMove="ImageCanvas_MouseMove"
                                 MouseLeftButtonUp="ImageCanvas_MouseLeftButtonUp">
                             <Image x:Name="DefectImage"
+                                   
+                                   Source="{Binding DefectImage}" 
+                                   
                                    Stretch="None"
                                    RenderOptions.BitmapScalingMode="HighQuality"/>
                         </Canvas>

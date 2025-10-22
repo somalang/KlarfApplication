@@ -16,10 +16,22 @@ namespace KlarfApplication.Model
         private double _yCoord;
         private int _row;
         private int _column;
-        private string _defectType;
-        private double _size;
+        private string _defectType; // [유지] CLASSNUMBER
+        private double _size;       // [유지] DSIZE
         private string _imagePath;
         private DateTime _detectedTime;
+
+        // [추가] 새로운 DefectRecordSpec 17 필드
+        private double _xSize;
+        private double _ySize;
+        private double _defectArea;
+        private int _test;
+        private int _clusterNumber;
+        private int _roughBinNumber;
+        private int _fineBinNumber;
+        private int _reviewSample;
+        private int _imageCount;
+        private string _imageList;
 
         #endregion
 
@@ -85,6 +97,7 @@ namespace KlarfApplication.Model
             }
         }
 
+        // CLASSNUMBER
         public string DefectType
         {
             get => _defectType;
@@ -95,6 +108,7 @@ namespace KlarfApplication.Model
             }
         }
 
+        // DSIZE
         public double Size
         {
             get => _size;
@@ -124,6 +138,68 @@ namespace KlarfApplication.Model
                 OnPropertyChanged(nameof(DetectedTime));
             }
         }
+
+        // [추가] 새로운 Defect 속성
+        public double XSize
+        {
+            get => _xSize;
+            set { _xSize = value; OnPropertyChanged(nameof(XSize)); }
+        }
+
+        public double YSize
+        {
+            get => _ySize;
+            set { _ySize = value; OnPropertyChanged(nameof(YSize)); }
+        }
+
+        public double DefectArea
+        {
+            get => _defectArea;
+            set { _defectArea = value; OnPropertyChanged(nameof(DefectArea)); }
+        }
+
+        public int Test
+        {
+            get => _test;
+            set { _test = value; OnPropertyChanged(nameof(Test)); }
+        }
+
+        public int ClusterNumber
+        {
+            get => _clusterNumber;
+            set { _clusterNumber = value; OnPropertyChanged(nameof(ClusterNumber)); }
+        }
+
+        public int RoughBinNumber
+        {
+            get => _roughBinNumber;
+            set { _roughBinNumber = value; OnPropertyChanged(nameof(RoughBinNumber)); }
+        }
+
+        public int FineBinNumber
+        {
+            get => _fineBinNumber;
+            set { _fineBinNumber = value; OnPropertyChanged(nameof(FineBinNumber)); }
+        }
+
+        public int ReviewSample
+        {
+            get => _reviewSample;
+            set { _reviewSample = value; OnPropertyChanged(nameof(ReviewSample)); }
+        }
+
+        public int ImageCount
+        {
+            get => _imageCount;
+            set { _imageCount = value; OnPropertyChanged(nameof(ImageCount)); }
+        }
+
+        public string ImageList
+        {
+            get => _imageList;
+            set { _imageList = value; OnPropertyChanged(nameof(ImageList)); }
+        }
+
 
         #endregion
 

@@ -29,6 +29,18 @@ namespace KlarfApplication.Model
         private double _diePitchY;
         private bool _isParsed;
 
+        // [추가] 새로운 KLARF 헤더 필드
+        private string _tiffSpec;
+        private DateTime _fileTimestamp;
+        private string _setupId;
+        private string _stepId;
+        private string _sampleOrientationMarkType;
+        private double _dieOriginX;
+        private double _dieOriginY;
+        private double _sampleCenterX;
+        private double _sampleCenterY;
+        private int _inspectionTest;
+
         #endregion
 
         #region Properties
@@ -134,6 +146,68 @@ namespace KlarfApplication.Model
             get => _diePitchY;
             set { _diePitchY = value; OnPropertyChanged(nameof(DiePitchY)); }
         }
+
+        // [추가] 새로운 KLARF 헤더 속성
+        public string TiffSpec
+        {
+            get => _tiffSpec;
+            set { _tiffSpec = value; OnPropertyChanged(nameof(TiffSpec)); }
+        }
+
+        public DateTime FileTimestamp
+        {
+            get => _fileTimestamp;
+            set { _fileTimestamp = value; OnPropertyChanged(nameof(FileTimestamp)); }
+        }
+
+        public string SetupId
+        {
+            get => _setupId;
+            set { _setupId = value; OnPropertyChanged(nameof(SetupId)); }
+        }
+
+        public string StepId
+        {
+            get => _stepId;
+            set { _stepId = value; OnPropertyChanged(nameof(StepId)); }
+        }
+
+        public string SampleOrientationMarkType
+        {
+            get => _sampleOrientationMarkType;
+            set { _sampleOrientationMarkType = value; OnPropertyChanged(nameof(SampleOrientationMarkType)); }
+        }
+
+        public double DieOriginX
+        {
+            get => _dieOriginX;
+            set { _dieOriginX = value; OnPropertyChanged(nameof(DieOriginX)); }
+        }
+
+        public double DieOriginY
+        {
+            get => _dieOriginY;
+            set { _dieOriginY = value; OnPropertyChanged(nameof(DieOriginY)); }
+        }
+
+        public double SampleCenterX
+        {
+            get => _sampleCenterX;
+            set { _sampleCenterX = value; OnPropertyChanged(nameof(SampleCenterX)); }
+        }
+
+        public double SampleCenterY
+        {
+            get => _sampleCenterY;
+            set { _sampleCenterY = value; OnPropertyChanged(nameof(SampleCenterY)); }
+        }
+
+        public int InspectionTest
+        {
+            get => _inspectionTest;
+            set { _inspectionTest = value; OnPropertyChanged(nameof(InspectionTest)); }
+        }
+
 
         public ObservableCollection<DieModel> DieMap { get; set; } = new();
         public ObservableCollection<Defect> Defects { get; set; } = new();
