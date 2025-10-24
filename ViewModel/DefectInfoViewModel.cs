@@ -3,25 +3,23 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using KlarfApplication;
 using System.Collections.Generic;
+using System;
 
 namespace KlarfApplication.ViewModel
 {
-    // (Enum 선언 등은 변경 없음)
     public enum DieNavigationType { First, Previous, Next, Last }
     public enum AllDieNavigationType { First, Previous, Next, Last }
 
     public class DefectInfoViewModel : ViewModelBase
     {
-        // (필드 선언 등은 변경 없음)
         private KlarfModel _currentKlarfFile;
         private DieViewModel _selectedDie;
         private Defect _selectedDefect;
         private ObservableCollection<Defect> _allDefects;
         private ObservableCollection<Defect> _defects;
-        private List<DieViewModel> _allDefectiveDies = new List<DieViewModel>();
-        private List<DieViewModel> _allWaferDies = new List<DieViewModel>();
+        private List<DieViewModel> _allDefectiveDies = new();
+        private List<DieViewModel> _allWaferDies = new();
 
         public event Action<DieNavigationType> DieNavigationRequested;
         public event Action<AllDieNavigationType> AllDieNavigationRequested;
@@ -62,29 +60,26 @@ namespace KlarfApplication.ViewModel
             set { _currentAllDieInfo = value; OnPropertyChanged(nameof(CurrentAllDieInfo)); }
         }
 
-        // (생성자, Command 초기화 등은 변경 없음)
         public DefectInfoViewModel()
         {
-            // 1. (왼쪽) 로컬 Defect
+            // 1️⃣ (왼쪽) 로컬 Defect
             FirstDieCommand = new RelayCommand(NavigateFirstLocalDefect, CanNavigateLocalDefects);
             PreviousDieCommand = new RelayCommand(NavigatePreviousLocalDefect, CanNavigateLocalDefects);
             NextDieCommand = new RelayCommand(NavigateNextLocalDefect, CanNavigateLocalDefects);
             LastDieCommand = new RelayCommand(NavigateLastLocalDefect, CanNavigateLocalDefects);
 
-            // 2. (오른쪽) 불량 Die
-            FirstDefectCommand = new RelayCommand(() => DieNavigationRequested?.Invoke(DieNavigationType.First), CanNavigateGlobalDies);
-            PreviousDefectCommand = new RelayCommand(() => DieNavigationRequested?.Invoke(DieNavigationType.Previous), CanNavigateGlobalDies);
-            NextDefectCommand = new RelayCommand(() => DieNavigationRequested?.Invoke(DieNavigationType.Next), CanNavigateGlobalDies);
-            LastDefectCommand = new RelayCommand(() => DieNavigationRequested?.Invoke(DieNavigationType.Last), CanNavigateGlobalDies);
+            // 2️⃣ (오른쪽) 불량 Die
+            FirstDefectCommand = new RelayCommand(() => NavigateGlobalDies(DieNavigationType.First), CanNavigateGlobalDies);
+            PreviousDefectCommand = new RelayCommand(() => NavigateGlobalDies(DieNavigationType.Previous), CanNavigateGlobalDies);
+            NextDefectCommand = new RelayCommand(() => NavigateGlobalDies(DieNavigationType.Next), CanNavigateGlobalDies);
+            LastDefectCommand = new RelayCommand(() => NavigateGlobalDies(DieNavigationType.Last), CanNavigateGlobalDies);
 
-            // 3. (가운데) 모든 Die
-            FirstAllDieCommand = new RelayCommand(() => AllDieNavigationRequested?.Invoke(AllDieNavigationType.First), CanNavigateAllDies);
-            PreviousAllDieCommand = new RelayCommand(() => AllDieNavigationRequested?.Invoke(AllDieNavigationType.Previous), CanNavigateAllDies);
-            NextAllDieCommand = new RelayCommand(() => AllDieNavigationRequested?.Invoke(AllDieNavigationType.Next), CanNavigateAllDies);
-            LastAllDieCommand = new RelayCommand(() => AllDieNavigationRequested?.Invoke(AllDieNavigationType.Last), CanNavigateAllDies);
+            // 3️⃣ (가운데) 전체 Die
+            FirstAllDieCommand = new RelayCommand(() => NavigateAllDies(AllDieNavigationType.First), CanNavigateAllDies);
+            PreviousAllDieCommand = new RelayCommand(() => NavigateAllDies(AllDieNavigationType.Previous), CanNavigateAllDies);
+            NextAllDieCommand = new RelayCommand(() => NavigateAllDies(AllDieNavigationType.Next), CanNavigateAllDies);
+            LastAllDieCommand = new RelayCommand(() => NavigateAllDies(AllDieNavigationType.Last), CanNavigateAllDies);
 
-
-            // 초기화
             _allDefects = new ObservableCollection<Defect>();
             Defects = new ObservableCollection<Defect>();
             UpdateDieNavInfo();
@@ -92,7 +87,6 @@ namespace KlarfApplication.ViewModel
             UpdateAllDieNavInfo();
         }
 
-        // (Properties: Defects, SelectedDie, SelectedDefect 등 변경 없음)
         public ObservableCollection<Defect> Defects
         {
             get => _defects;
@@ -131,7 +125,7 @@ namespace KlarfApplication.ViewModel
             {
                 _selectedDefect = value;
                 OnPropertyChanged(nameof(SelectedDefect));
-                UpdateDieNavInfo(); // (왼쪽) 텍스트만 업데이트
+                UpdateDieNavInfo();
             }
         }
 
@@ -171,8 +165,8 @@ namespace KlarfApplication.ViewModel
         {
             if (allWaferDies == null)
             {
-                _allDefectiveDies = new List<DieViewModel>();
-                _allWaferDies = new List<DieViewModel>();
+                _allDefectiveDies = new();
+                _allWaferDies = new();
             }
             else
             {
@@ -204,146 +198,187 @@ namespace KlarfApplication.ViewModel
             SelectedDefect = Defects.FirstOrDefault();
         }
 
-        // --- 1. (왼쪽) 로컬 Defect (CanExecute/Navigate 로직 변경 없음) ---
-        private bool CanNavigateLocalDefects() => Defects != null && Defects.Count > 0;
+        // ------------------- 1️⃣ Local Defects -------------------
+        private bool CanNavigateLocalDefects() => Defects != null;
+
         private void NavigateFirstLocalDefect()
         {
-            if (CanNavigateLocalDefects()) SelectedDefect = Defects.First();
+            if (!CanNavigateLocalDefects() || Defects.Count == 0) return;
+            SelectedDefect = Defects.First();
         }
+
         private void NavigatePreviousLocalDefect()
         {
-            if (!CanNavigateLocalDefects()) return;
+            if (!CanNavigateLocalDefects() || Defects.Count == 0) return;
             int currentIndex = Defects.IndexOf(SelectedDefect);
             if (currentIndex > 0) SelectedDefect = Defects[currentIndex - 1];
         }
+
         private void NavigateNextLocalDefect()
         {
-            if (!CanNavigateLocalDefects()) return;
+            if (!CanNavigateLocalDefects() || Defects.Count == 0) return;
             int currentIndex = Defects.IndexOf(SelectedDefect);
             if (currentIndex < Defects.Count - 1) SelectedDefect = Defects[currentIndex + 1];
         }
+
         private void NavigateLastLocalDefect()
         {
-            if (CanNavigateLocalDefects()) SelectedDefect = Defects.Last();
+            if (!CanNavigateLocalDefects() || Defects.Count == 0) return;
+            SelectedDefect = Defects.Last();
         }
 
-        // --- 2. (오른쪽) 불량 Die (CanExecute 로직 변경 없음) ---
-        private bool CanNavigateGlobalDies() => _allDefectiveDies != null && _allDefectiveDies.Count > 0;
+        // ------------------- 2️⃣ Defective Dies -------------------
+        private bool CanNavigateGlobalDies() => Defects != null;
 
-        // --- 3. (가운데) 모든 Die (CanExecute 로직 변경 없음) ---
-        private bool CanNavigateAllDies() => _allWaferDies != null && _allWaferDies.Count > 0;
+        private void NavigateGlobalDies(DieNavigationType type)
+        {
+            if (!CanNavigateGlobalDies()) return;
 
+            // ⭐ 선택된 게 없을 때 → 첫 번째로 자동 이동
+            if (SelectedDie == null)
+            {
+                SelectedDie = _allDefectiveDies.FirstOrDefault();
+                return;
+            }
 
-        // --- [신규] 텍스트 업데이트 로직 3가지 ---
+            int index = _allDefectiveDies.IndexOf(SelectedDie);
+            if (index < 0) index = 0;
 
-        /// 1. (왼쪽) "defects per die"
-        /// ⭐️ [수정] 사용자의 요청("선택된 게 없거나 good die인 경우 - 표시")에 맞게 로직 수정
+            switch (type)
+            {
+                case DieNavigationType.First:
+                    SelectedDie = _allDefectiveDies.FirstOrDefault();
+                    break;
+                case DieNavigationType.Previous:
+                    if (index > 0) SelectedDie = _allDefectiveDies[index - 1];
+                    break;
+                case DieNavigationType.Next:
+                    if (index < _allDefectiveDies.Count - 1) SelectedDie = _allDefectiveDies[index + 1];
+                    break;
+                case DieNavigationType.Last:
+                    SelectedDie = _allDefectiveDies.LastOrDefault();
+                    break;
+            }
+        }
+
+        // ------------------- 3️⃣ All Dies -------------------
+        private bool CanNavigateAllDies() => _allWaferDies != null && _allWaferDies.Count >= 0;
+
+        private void NavigateAllDies(AllDieNavigationType type)
+        {
+            if (!CanNavigateAllDies()) return;
+
+            // ⭐ 선택된 게 없을 때 → 첫 번째로 자동 이동
+            if (SelectedDie == null)
+            {
+                SelectedDie = _allWaferDies.FirstOrDefault();
+                return;
+            }
+
+            int index = _allWaferDies.IndexOf(SelectedDie);
+            if (index < 0) index = 0;
+
+            switch (type)
+            {
+                case AllDieNavigationType.First:
+                    SelectedDie = _allWaferDies.FirstOrDefault();
+                    break;
+                case AllDieNavigationType.Previous:
+                    if (index > 0) SelectedDie = _allWaferDies[index - 1];
+                    break;
+                case AllDieNavigationType.Next:
+                    if (index < _allWaferDies.Count - 1) SelectedDie = _allWaferDies[index + 1];
+                    break;
+                case AllDieNavigationType.Last:
+                    SelectedDie = _allWaferDies.LastOrDefault();
+                    break;
+            }
+        }
+
+        // ------------------- UI 텍스트 갱신 -------------------
         private void UpdateDieNavInfo()
         {
-            var list = Defects; // 현재 DataGrid에 표시된 리스트
-            var total = (list?.Count ?? 0);
+            var list = Defects;
+            var total = list?.Count ?? 0;
 
-            // 요청 1: "Good Die인 경우" (리스트가 비어있음)
-            if (SelectedDie != null && SelectedDie.IsGood)
+            if (total == 0)
+            {
+                CurrentDieInfo = "0 / 0";
+                RaiseCanExecuteChanged();
+                return;
+            }
+
+            if (SelectedDie == null)
+            {
+                CurrentDieInfo = $"- / {total}";
+                RaiseCanExecuteChanged();
+                return;
+            }
+
+            if (SelectedDie.IsGood)
             {
                 CurrentDieInfo = "- / 0";
+                RaiseCanExecuteChanged();
+                return;
             }
-            // 요청 2: "선택된 게 없는 경우" (SelectedDie가 null)
-            else if (SelectedDie == null)
-            {
-                // 이 경우 'Defects' 리스트는 모든 Defect를 표시합니다.
-                CurrentDieInfo = $"- / {total}";
-            }
-            // 그 외 (불량 Die가 선택된 경우)
-            else
-            {
-                var currentItem = SelectedDefect;
-                int currentIndex = (currentItem == null || list == null) ? -1 : list.IndexOf(currentItem);
 
-                if (currentIndex == -1)
-                {
-                    CurrentDieInfo = $"- / {total}";
-                }
-                else
-                {
-                    CurrentDieInfo = $"{currentIndex + 1} / {total}";
-                }
-            }
+            var currentItem = SelectedDefect;
+            int currentIndex = (currentItem == null || list == null) ? -1 : list.IndexOf(currentItem);
+
+            CurrentDieInfo = (currentIndex == -1) ? $"- / {total}" : $"{currentIndex + 1} / {total}";
             RaiseCanExecuteChanged();
         }
 
-
-        /// 2. (오른쪽) "die with defects" (기존 로직이 이미 사용자의 요구사항과 일치)
         private void UpdateDefectNavInfo()
         {
             var list = _allDefectiveDies;
-            var total = (list?.Count ?? 0);
+            var total = list?.Count ?? 0;
 
             if (total == 0)
             {
                 CurrentDefectInfo = "0 / 0";
-                RaiseCanExecuteChanged(); // ⭐️ 버튼 비활성화를 위해 추가
+                RaiseCanExecuteChanged();
                 return;
             }
 
-            var currentItem = SelectedDie; // 항목 = Die
+            var currentItem = SelectedDie;
             int currentIndex = (currentItem == null || list == null) ? -1 : list.IndexOf(currentItem);
 
-            if (currentIndex == -1) // ⭐️ 선택된 게 없거나(null) Good Die일 때(Not in list)
-            {
-                CurrentDefectInfo = $"- / {total}";
-            }
-            else
-            {
-                CurrentDefectInfo = $"{currentIndex + 1} / {total}";
-            }
+            CurrentDefectInfo = (currentIndex == -1) ? $"- / {total}" : $"{currentIndex + 1} / {total}";
             RaiseCanExecuteChanged();
         }
 
-        /// 3. (가운데) "All Dies" (기존 로직이 이미 사용자의 요구사항과 일치)
         private void UpdateAllDieNavInfo()
         {
             var list = _allWaferDies;
-            var total = (list?.Count ?? 0);
+            var total = list?.Count ?? 0;
 
             if (total == 0)
             {
                 CurrentAllDieInfo = "0 / 0";
-                RaiseCanExecuteChanged(); // ⭐️ 버튼 비활성화를 위해 추가
+                RaiseCanExecuteChanged();
                 return;
             }
 
-            var currentItem = SelectedDie; // 항목 = Die
+            var currentItem = SelectedDie;
             int currentIndex = (currentItem == null || list == null) ? -1 : list.IndexOf(currentItem);
 
-            if (currentIndex == -1) // ⭐️ 선택된 게 없을 때(null)
-            {
-                CurrentAllDieInfo = $"- / {total}";
-            }
-            else
-            {
-                CurrentAllDieInfo = $"{currentIndex + 1} / {total}";
-            }
+            CurrentAllDieInfo = (currentIndex == -1) ? $"- / {total}" : $"{currentIndex + 1} / {total}";
             RaiseCanExecuteChanged();
         }
 
-
-        // (RaiseCanExecuteChanged 메서드 변경 없음)
         private void RaiseCanExecuteChanged()
         {
-            // 1. 왼쪽
             (FirstDieCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (PreviousDieCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (NextDieCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (LastDieCommand as RelayCommand)?.RaiseCanExecuteChanged();
 
-            // 2. 오른쪽
             (FirstDefectCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (PreviousDefectCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (NextDefectCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (LastDefectCommand as RelayCommand)?.RaiseCanExecuteChanged();
 
-            // 3. 가운데
             (FirstAllDieCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (PreviousAllDieCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (NextAllDieCommand as RelayCommand)?.RaiseCanExecuteChanged();
