@@ -57,10 +57,10 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,10,0">
-                            <Button Content="➕"></Button>
+                            <Button Content="➕" Background="Transparent" Foreground="LightGray" BorderBrush="Transparent" ></Button>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Button Content="➖"></Button>
+                            <Button Content="➖" Background="Transparent" Foreground="LightGray" BorderBrush="Transparent"></Button>
                         </StackPanel>
                     </StackPanel>
                 </Grid>

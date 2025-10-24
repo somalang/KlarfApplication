@@ -38,19 +38,18 @@
                     <ScrollViewer HorizontalScrollBarVisibility="Auto"
                                   VerticalScrollBarVisibility="Auto"
                                   x:Name="ImageScrollViewer">
-                        <Canvas x:Name="ImageCanvas"
-                                Background="Transparent"
-                                MouseWheel="ImageCanvas_MouseWheel"
-                                MouseLeftButtonDown="ImageCanvas_MouseLeftButtonDown"
-                                MouseMove="ImageCanvas_MouseMove"
-                                MouseLeftButtonUp="ImageCanvas_MouseLeftButtonUp">
+                        <Grid x:Name="ImageGrid"
+                              Background="Transparent">
+
                             <Image x:Name="DefectImage"
-                                   
-                                   Source="{Binding DefectImage}" 
-                                   
-                                   Stretch="None"
-                                   RenderOptions.BitmapScalingMode="HighQuality"/>
-                        </Canvas>
+                                   Source="{Binding DefectImage}"   
+                                   Stretch="Uniform" 
+                                   RenderOptions.BitmapScalingMode="HighQuality"
+                                   MouseWheel="ImageCanvas_MouseWheel"
+                                   MouseLeftButtonDown="ImageCanvas_MouseLeftButtonDown"
+                                   MouseMove="ImageCanvas_MouseMove"
+                                   MouseLeftButtonUp="ImageCanvas_MouseLeftButtonUp"/>
+                        </Grid>
                     </ScrollViewer>
 
                     <TextBlock Text="No Image Loaded"
@@ -89,12 +88,6 @@
                         <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                             <TextBlock Text="Zoom:" Foreground="White" VerticalAlignment="Center" Margin="0,0,10,0"/>
                             <TextBlock Text="{Binding ZoomLevel, StringFormat={}{0:F0}%}" Foreground="Cyan" VerticalAlignment="Center" FontWeight="Bold" MinWidth="50"/>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0">
-                                <Button Content="➕" Padding="5"></Button>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                <Button Content="➖" Padding="5"></Button>
-                            </StackPanel>
                         </StackPanel>
                         
                     </Grid>
