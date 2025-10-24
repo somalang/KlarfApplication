@@ -32,13 +32,15 @@
 
             <Border Grid.Row="1" Background="#FF1E1E1E" ClipToBounds="True">
                 <Grid>
-                    <Canvas Width="500" Height="500"
-                            x:Name="WaferMapCanvas"
+                    <!-- ⭐️ [수정] Width/Height 삭제, RMB 이벤트 추가 -->
+                    <Canvas x:Name="WaferMapCanvas"
                             Background="Transparent"
                             MouseWheel="WaferMapCanvas_MouseWheel"
                             MouseLeftButtonDown="WaferMapCanvas_MouseLeftButtonDown"
                             MouseLeftButtonUp="WaferMapCanvas_MouseLeftButtonUp"
-                            MouseMove="WaferMapCanvas_MouseMove">
+                            MouseMove="WaferMapCanvas_MouseMove"
+                            MouseRightButtonDown="WaferMapCanvas_MouseRightButtonDown"
+                            MouseRightButtonUp="WaferMapCanvas_MouseRightButtonUp">
                         <Canvas.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform x:Name="CanvasScaleTransform"/>

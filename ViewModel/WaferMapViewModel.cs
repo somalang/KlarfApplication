@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input; // ⭐️ [추가] ICommand 사용
+using KlarfApplication; // ⭐️ [추가] RelayCommand 사용을 위해
 
 namespace KlarfApplication.ViewModel
 {
@@ -91,11 +92,14 @@ namespace KlarfApplication.ViewModel
                 _allDefects = new List<Defect>(); // ⭐️ Defect 리스트 초기화
                 NoImageVisibility = Visibility.Visible;
                 WaferMapStats = "";
+                Wafer = null; // ⭐️ Wafer 정보도 초기화
+                OnPropertyChanged(nameof(AllDefects)); // ⭐️ View에 변경 알림
                 return;
             }
 
             // ⭐️ Defect 리스트 저장
             _allDefects = klarf.Defects.ToList();
+            OnPropertyChanged(nameof(AllDefects)); // ⭐️ View에 변경 알림
 
             Wafer = new WaferModel
             {
@@ -105,8 +109,16 @@ namespace KlarfApplication.ViewModel
                 Orientation = klarf.OrientationMarkLocation
             };
 
+            // ⭐️ DieMap이 비어있을 경우 예외 처리
+            if (klarf.DieMap == null || !klarf.DieMap.Any())
+            {
+                Dies = new ObservableCollection<DieViewModel>();
+                NoImageVisibility = Visibility.Visible;
+                WaferMapStats = "No Die data in Klarf";
+                return;
+            }
+
             // Die 좌표 범위 계산
-            // (DieViewModel 생성 및 통계 계산 로직은 변경 없음)
             var minRow = klarf.DieMap.Min(d => d.Row);
             var maxRow = klarf.DieMap.Max(d => d.Row);
             var minCol = klarf.DieMap.Min(d => d.Column);
