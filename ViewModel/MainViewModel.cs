@@ -2,6 +2,7 @@
 using KlarfApplication.Service;
 using System.ComponentModel;
 using System.Windows.Input;
+using System;
 using System.IO;
 using System.Linq;
 
@@ -122,7 +123,10 @@ namespace KlarfApplication.ViewModel
                     if (File.Exists(tifPath))
                     {
                         var defectImage = _imageService.LoadTifFrame(tifPath, frameNumber);
-                        DefectImageViewModel.LoadDefectImage(defectImage);
+
+                        // ⭐️ [수정] 픽셀 스케일 값을 KlarfModel에서 가져와 함께 전달
+                        double scale = SelectedKlarf?.PixelScale ?? 0;
+                        DefectImageViewModel.LoadDefectImage(defectImage, scale);
                     }
                     else
                     {

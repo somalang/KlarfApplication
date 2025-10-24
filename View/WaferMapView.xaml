@@ -1,6 +1,19 @@
 ﻿<UserControl x:Class="KlarfApplication.View.WaferMapViewer"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <Style x:Key="ToolButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="MinWidth" Value="30"/>
+            <Setter Property="MinHeight" Value="20"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="LightGray"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+    </UserControl.Resources>
 
     <Border BorderBrush="#FF3E3E42" BorderThickness="2">
         <Grid>
@@ -12,35 +25,32 @@
 
             <Border Grid.Row="0" Background="#FF007ACC" Padding="8,5">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="⬢ Wafer Map Viewer"
-                               Foreground="White"
-                               FontWeight="Bold"
-                               FontSize="13"
-                               VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding WaferMapStats}"
-                               Foreground="White"
-                               Margin="15,0,0,0"
-                               VerticalAlignment="Center"
-                               FontSize="11"/>
+                    <TextBlock Text="⬢ Wafer Map Viewer" Foreground="White" FontWeight="Bold" FontSize="13" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding WaferMapStats}" Foreground="White" Margin="15,0,0,0" VerticalAlignment="Center" FontSize="11"/>
                 </StackPanel>
             </Border>
 
-            <Border Grid.Row="1" Background="#FF1E1E1E">
-                <Viewbox Stretch="Uniform">
-                    <Grid>
-                        <Canvas Width="500" Height="500"
+            <Border Grid.Row="1" Background="#FF1E1E1E" ClipToBounds="True">
+                <Grid>
+                    <Canvas Width="500" Height="500"
                             x:Name="WaferMapCanvas"
-                            MouseLeftButtonDown="WaferMapCanvas_MouseLeftButtonDown">
-                            <!-- 웨이퍼 맵 -->
-                        </Canvas>
-                        <TextBlock Text="No Image Loaded"
-                           Foreground="Gray"
-                           FontSize="25"
-                           HorizontalAlignment="Center" 
-                           VerticalAlignment="Center"
-                           Visibility="{Binding NoImageVisibility}"/>
-                    </Grid>
-                </Viewbox>
+                            Background="Transparent"
+                            MouseWheel="WaferMapCanvas_MouseWheel"
+                            MouseLeftButtonDown="WaferMapCanvas_MouseLeftButtonDown"
+                            MouseLeftButtonUp="WaferMapCanvas_MouseLeftButtonUp"
+                            MouseMove="WaferMapCanvas_MouseMove">
+                        <Canvas.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform x:Name="CanvasScaleTransform"/>
+                                <TranslateTransform x:Name="CanvasTranslateTransform"/>
+                            </TransformGroup>
+                        </Canvas.RenderTransform>
+                    </Canvas>
+
+                    <TextBlock Text="No Image Loaded" Foreground="Gray" FontSize="25"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                               Visibility="{Binding NoImageVisibility}"/>
+                </Grid>
             </Border>
 
             <Border Grid.Row="2" Background="#FF2D2D30" Padding="10,5">
@@ -48,20 +58,22 @@
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <StackPanel Orientation="Horizontal" Margin="0,0,20,0">
                             <Rectangle Width="15" Height="15" Fill="DarkGray" Stroke="White" StrokeThickness="1"/>
-                            <TextBlock Text="Good Dies" Foreground="White" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Good Die" Foreground="White" Margin="5,0,0,0" VerticalAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,20,0">
                             <Rectangle Width="15" Height="15" Fill="#E30413" Stroke="White" StrokeThickness="1"/>
-                            <TextBlock Text="Defective Dies" Foreground="White" Margin="5,0,0,0" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,10,0">
-                            <Button Content="➕" Background="Transparent" Foreground="LightGray" BorderBrush="Transparent" ></Button>
+                            <TextBlock Text="Defective Die" Foreground="White" Margin="5,0,0,0" VerticalAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Button Content="➖" Background="Transparent" Foreground="LightGray" BorderBrush="Transparent"></Button>
+                            <Ellipse Width="8" Height="8" Fill="Yellow" Margin="3"/>
+                            <TextBlock Text="Defect" Foreground="White" Margin="5,0,0,0" VerticalAlignment="Center"/>
                         </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="➕" Style="{StaticResource ToolButtonStyle}" Command="{Binding ZoomInCommand}" ToolTip="Zoom In"/>
+                        <Button Content="➖" Style="{StaticResource ToolButtonStyle}" Command="{Binding ZoomOutCommand}" ToolTip="Zoom Out"/>
+                        <Button Content="🔃" Style="{StaticResource ToolButtonStyle}" Command="{Binding ResetViewCommand}" ToolTip="Reset View"/>
                     </StackPanel>
                 </Grid>
             </Border>

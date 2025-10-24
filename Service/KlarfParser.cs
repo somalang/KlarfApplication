@@ -134,6 +134,19 @@ namespace KlarfApplication.Service
                     {
                         klarf.TiffSpec = $"{parts[1]} {parts[2].TrimEnd(';')}";
                     }
+
+                    // ⭐️ [수정된 로직]
+                    // GetQuotedValue 대신, 라인에서 두 번째 조각(parts[1])을 파싱합니다.
+                    // (예: TiffSpec 0.1 "um/pixel")
+                    if (parts.Length >= 2)
+                    {
+                        // parts[1] (e.g., "0.1")에서 따옴표를 제거하고 파싱
+                        string scaleStr = parts[1].Trim('"');
+                        if (double.TryParse(scaleStr, NumberStyles.Any, CultureInfo.InvariantCulture, out double scale))
+                        {
+                            klarf.PixelScale = scale;
+                        }
+                    }
                 }
                 else if (line.StartsWith("FileTimestamp"))
                 {

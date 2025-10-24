@@ -40,7 +40,7 @@ namespace KlarfApplication.Model
         private double _sampleCenterX;
         private double _sampleCenterY;
         private int _inspectionTest;
-
+        private double _pixelScale;
         #endregion
 
         #region Properties
@@ -153,7 +153,11 @@ namespace KlarfApplication.Model
             get => _tiffSpec;
             set { _tiffSpec = value; OnPropertyChanged(nameof(TiffSpec)); }
         }
-
+        public double PixelScale
+        {
+            get => _pixelScale;
+            set { _pixelScale = value; OnPropertyChanged(nameof(PixelScale)); }
+        }
         public DateTime FileTimestamp
         {
             get => _fileTimestamp;

@@ -25,6 +25,7 @@ namespace KlarfApplication.ViewModel
         {
             get
             {
+                // ⭐️ [수정] DefectImage가 null일 때 "No Image" 표시
                 return (DefectImage == null) ? Visibility.Visible : Visibility.Collapsed;
             }
         }
@@ -60,15 +61,26 @@ namespace KlarfApplication.ViewModel
             ZoomOutCommand = new RelayCommand(() => ZoomOutRequested?.Invoke());
             // ⭐️ --- [추가 끝] ---
         }
-
+        private double _pixelScale;
+        public double PixelScale
+        {
+            get => _pixelScale;
+            set
+            {
+                _pixelScale = value;
+                OnPropertyChanged(nameof(PixelScale));
+            }
+        }
         // (LoadDefectImage, ClearImage, UpdateFromKlarf 메서드는 동일)
-        public void LoadDefectImage(BitmapSource image)
+        public void LoadDefectImage(BitmapSource image, double pixelScale)
         {
             DefectImage = image;
+            PixelScale = pixelScale;
         }
         public void ClearImage()
         {
             DefectImage = null;
+            PixelScale = 0;
         }
         public void UpdateFromKlarf(KlarfModel klarf)
         {
