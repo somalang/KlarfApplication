@@ -162,5 +162,52 @@ namespace KlarfApplication.View
                 viewModel.SelectedDie = null;
             }
         }
+        //private void ImageCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
+        //{
+        //    if (_originalBitmap == null) return;
+
+        //    double zoomFactor = e.Delta > 0 ? 1.2 : (1 / 1.2); // 줌 배율
+        //    Point mousePos = e.GetPosition(DefectImage);
+
+        //    // 마우스 포인터를 기준으로 줌인/아웃
+        //    DefectImage.RenderTransformOrigin = new Point(
+        //        mousePos.X / DefectImage.ActualWidth,
+        //        mousePos.Y / DefectImage.ActualHeight);
+
+        //    _scaleTransform.ScaleX *= zoomFactor;
+        //    _scaleTransform.ScaleY *= zoomFactor;
+
+        //    e.Handled = true;
+        //}
+
+        //// (MouseLeftButtonDown, MouseMove, MouseLeftButtonUp 메서드는 동일)
+        //private void ImageCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        //{
+        //    if (_originalBitmap == null) return;
+        //    _panStartPoint = e.GetPosition(ImageScrollViewer);
+        //    DefectImage.CaptureMouse();
+        //    DefectImage.Cursor = Cursors.Hand;
+        //    e.Handled = true;
+        //}
+
+        //private void ImageCanvas_MouseMove(object sender, MouseEventArgs e)
+        //{
+        //    if (_panStartPoint.HasValue)
+        //    {
+        //        Point currentPoint = e.GetPosition(ImageScrollViewer);
+        //        Vector delta = currentPoint - _panStartPoint.Value;
+        //        _translateTransform.X += delta.X;
+        //        _translateTransform.Y += delta.Y;
+        //        _panStartPoint = currentPoint;
+        //    }
+        //}
+
+        //private void ImageCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    _panStartPoint = null;
+        //    DefectImage.ReleaseMouseCapture();
+        //    DefectImage.Cursor = Cursors.Arrow;
+        //    e.Handled = true;
+        //}
     }
 }

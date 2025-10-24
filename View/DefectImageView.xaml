@@ -38,17 +38,23 @@
                     <ScrollViewer HorizontalScrollBarVisibility="Auto"
                                   VerticalScrollBarVisibility="Auto"
                                   x:Name="ImageScrollViewer">
+
                         <Grid x:Name="ImageGrid"
-                              Background="Transparent">
+                              Background="Transparent"
+                              MouseWheel="ImageGrid_MouseWheel"
+                              MouseLeftButtonDown="ImageGrid_MouseLeftButtonDown"
+                              MouseLeftButtonUp="ImageGrid_MouseLeftButtonUp"
+                              MouseMove="ImageGrid_MouseMove"
+                              MouseRightButtonDown="ImageGrid_MouseRightButtonDown"
+                              MouseRightButtonUp="ImageGrid_MouseRightButtonUp">
 
                             <Image x:Name="DefectImage"
                                    Source="{Binding DefectImage}"   
                                    Stretch="Uniform" 
-                                   RenderOptions.BitmapScalingMode="HighQuality"
-                                   MouseWheel="ImageCanvas_MouseWheel"
-                                   MouseLeftButtonDown="ImageCanvas_MouseLeftButtonDown"
-                                   MouseMove="ImageCanvas_MouseMove"
-                                   MouseLeftButtonUp="ImageCanvas_MouseLeftButtonUp"/>
+                                   RenderOptions.BitmapScalingMode="HighQuality"/>
+
+                            <Canvas x:Name="DrawingCanvas" />
+
                         </Grid>
                     </ScrollViewer>
 
@@ -70,36 +76,28 @@
                         <RowDefinition Height="5"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-
-                    <!-- 줌 컨트롤 -->
                     <Grid Grid.Row="0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-
                         <StackPanel Grid.Column="0" Orientation="Horizontal">
                             <Button Content="➕" Style="{StaticResource ToolButtonStyle}" Command="{Binding ZoomInCommand}" ToolTip="Zoom In (Ctrl++)" Background="Transparent" Foreground ="LightGray" BorderBrush="Transparent" BorderThickness="0"/>
                             <Button Content="➖" Style="{StaticResource ToolButtonStyle}" Command="{Binding ZoomOutCommand}" ToolTip="Zoom Out (Ctrl+-)" Background="Transparent" Foreground ="LightGray" BorderBrush="Transparent" BorderThickness="0"/>
                             <Button Content="🔃" Style="{StaticResource ToolButtonStyle}" Command="{Binding ResetViewCommand}" ToolTip="Reset View (Ctrl+0)" Background="Transparent" Foreground ="LightGray" BorderBrush="Transparent" BorderThickness="0"/>
                             <Button Content="🔛" Style="{StaticResource ToolButtonStyle}" Command="{Binding FitToWindowCommand}" ToolTip="Fit to Window" Background="Transparent" Foreground ="LightGray" BorderBrush="Transparent" BorderThickness="0"/>
                         </StackPanel>
-
                         <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                             <TextBlock Text="Zoom:" Foreground="White" VerticalAlignment="Center" Margin="0,0,10,0"/>
                             <TextBlock Text="{Binding ZoomLevel, StringFormat={}{0:F0}%}" Foreground="Cyan" VerticalAlignment="Center" FontWeight="Bold" MinWidth="50"/>
                         </StackPanel>
-                        
                     </Grid>
-
-                    <!-- 밝기 -->
                     <Grid Grid.Row="2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="90"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="50"/>
                         </Grid.ColumnDefinitions>
-
                         <TextBlock Grid.Column="0" Text="Brightness:" Foreground="White" VerticalAlignment="Center"/>
                         <Slider Grid.Column="1"
                                 x:Name="BrightnessSlider"
@@ -111,15 +109,12 @@
                                    Text="{Binding ElementName=BrightnessSlider, Path=Value, StringFormat={}{0:F0}}"
                                    Foreground="White" VerticalAlignment="Center" TextAlignment="Right"/>
                     </Grid>
-
-                    <!-- 대비 -->
                     <Grid Grid.Row="4">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="90"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="50"/>
                         </Grid.ColumnDefinitions>
-
                         <TextBlock Grid.Column="0" Text="Contrast:" Foreground="White" VerticalAlignment="Center"/>
                         <Slider Grid.Column="1"
                                 x:Name="ContrastSlider"
