@@ -106,8 +106,21 @@ namespace KlarfApplication.View
         {
             if (_originalBitmap == null) return;
             ImageGrid.RenderTransformOrigin = new Point(0.5, 0.5);
-            _scaleTransform.ScaleX *= zoomFactor;
-            _scaleTransform.ScaleY *= zoomFactor;
+
+            double newScaleX = _scaleTransform.ScaleX * zoomFactor;
+            double newScaleY = _scaleTransform.ScaleY * zoomFactor;
+
+            // 최대 줌: 300% (3배), 최소 줌: 100% (1배)
+            const double MAX_ZOOM = 3.0;
+            const double MIN_ZOOM = 1.0;
+
+            if (newScaleX > MAX_ZOOM) newScaleX = MAX_ZOOM;
+            if (newScaleX < MIN_ZOOM) newScaleX = MIN_ZOOM;
+            if (newScaleY > MAX_ZOOM) newScaleY = MAX_ZOOM;
+            if (newScaleY < MIN_ZOOM) newScaleY = MIN_ZOOM;
+
+            _scaleTransform.ScaleX = newScaleX;
+            _scaleTransform.ScaleY = newScaleY;
         }
         #endregion
 
@@ -122,8 +135,21 @@ namespace KlarfApplication.View
             ImageGrid.RenderTransformOrigin = new Point(
                 mousePos.X / ImageGrid.ActualWidth,
                 mousePos.Y / ImageGrid.ActualHeight);
-            _scaleTransform.ScaleX *= zoomFactor;
-            _scaleTransform.ScaleY *= zoomFactor;
+
+            double newScaleX = _scaleTransform.ScaleX * zoomFactor;
+            double newScaleY = _scaleTransform.ScaleY * zoomFactor;
+
+            // 최대 줌: 300% (3배), 최소 줌: 100% (1배)
+            const double MAX_ZOOM = 3.0;
+            const double MIN_ZOOM = 1.0;
+
+            if (newScaleX > MAX_ZOOM) newScaleX = MAX_ZOOM;
+            if (newScaleX < MIN_ZOOM) newScaleX = MIN_ZOOM;
+            if (newScaleY > MAX_ZOOM) newScaleY = MAX_ZOOM;
+            if (newScaleY < MIN_ZOOM) newScaleY = MIN_ZOOM;
+
+            _scaleTransform.ScaleX = newScaleX;
+            _scaleTransform.ScaleY = newScaleY;
             e.Handled = true;
         }
 
