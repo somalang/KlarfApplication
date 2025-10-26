@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic; // ⭐️ [추가] Dictionary
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -28,7 +28,6 @@ namespace KlarfApplication.View
             _scaleTransform = CanvasScaleTransform;
             _translateTransform = CanvasTranslateTransform;
 
-            // ⭐️ 캔버스 크기가 변경될 때(예: 창 크기 조절) 맵을 다시 그리도록 이벤트 연결
             this.SizeChanged += (s, e) => DrawWaferMap();
         }
 
@@ -53,26 +52,39 @@ namespace KlarfApplication.View
 
         private void OnViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            // ⭐️ Dies 또는 Wafer(Die 크기)가 변경되면 다시 그림
             if (e.PropertyName == nameof(WaferViewModel.Dies) || e.PropertyName == nameof(WaferViewModel.Wafer))
             {
                 DrawWaferMap();
-                OnResetViewRequested(); // ⭐️ 맵 다시 그릴 때 줌/패닝 리셋 추가
+                OnResetViewRequested();
             }
         }
 
         #region 줌/패닝 이벤트 및 로직
-        // ⭐️ [수정] 줌 버튼 클릭 시 현재 보이는 중심점을 기준으로 줌
+
+        // ⭐️ [수정됨 - Goal 1]
+        // 현재 화면(Viewport)의 중심점을 캔버스(WaferMapCanvas) 내부 좌표로 변환하여 반환합니다.
+        private Point GetVisibleCenterInCanvasCoordinates()
+        {
+            // 1. Viewport(UserControl)의 중심점
+            Point viewportCenter = new Point(this.ActualWidth / 2, this.ActualHeight / 2);
+
+            // 2. 이 중심점을 WaferMapCanvas의 좌표계로 변환
+            // (현재 화면 중앙에 캔버스의 어느 지점이 와 있는지 확인)
+            return this.TranslatePoint(viewportCenter, WaferMapCanvas);
+        }
+
+
+        // ⭐️ [수정됨 - Goal 1]
+        // 버튼 줌 요청 시, 캔버스 좌표계 기준의 현재 뷰 중심을 사용합니다.
         private void OnZoomInRequested()
         {
-            Point center = GetCanvasCenterInControlCoordinates();
-            DoZoom(1.2, center);
+            DoZoom(1.2, GetVisibleCenterInCanvasCoordinates());
         }
-        // ⭐️ [수정] 줌 버튼 클릭 시 현재 보이는 중심점을 기준으로 줌
+
+        // ⭐️ [수정됨 - Goal 1]
         private void OnZoomOutRequested()
         {
-            Point center = GetCanvasCenterInControlCoordinates();
-            DoZoom(1 / 1.2, center);
+            DoZoom(1 / 1.2, GetVisibleCenterInCanvasCoordinates());
         }
 
         private void OnResetViewRequested()
@@ -87,65 +99,104 @@ namespace KlarfApplication.View
         private void DoZoom(double factor, Point? center = null)
         {
             var vm = DataContext as WaferViewModel;
-            // ⭐️ 캔버스 크기가 0일 때 줌 방지 추가
             if (vm == null || vm.Dies == null || !vm.Dies.Any() || WaferMapCanvas.ActualWidth == 0 || WaferMapCanvas.ActualHeight == 0) return;
 
-            // ⭐️ 마우스 위치 또는 캔버스 중심을 줌 중심으로 사용
             Point zoomCenter = center ?? new Point(WaferMapCanvas.ActualWidth / 2, WaferMapCanvas.ActualHeight / 2);
 
-            // ⭐️ RenderTransformOrigin을 0~1 사이 값으로 설정
             WaferMapCanvas.RenderTransformOrigin = new Point(
                 zoomCenter.X / WaferMapCanvas.ActualWidth,
                 zoomCenter.Y / WaferMapCanvas.ActualHeight);
 
             _scaleTransform.ScaleX *= factor;
             _scaleTransform.ScaleY *= factor;
+
+            // ⭐️ [추가됨 - Goal 2] 줌 직후 경계 검사
+            ClampPan();
         }
 
-        // ⭐️ 캔버스의 현재 보이는 중심 좌표를 UserControl 기준으로 반환하는 도우미 메서드
-        private Point GetCanvasCenterInControlCoordinates()
+        // ⭐️ [신규 추가 - Goal 2]
+        /// <summary>
+        /// 줌 배율이 1.0 미만이 되지 않도록 하고,
+        /// 캔버스가 뷰포트 밖으로 나가지 않도록 패닝(Translate)을 제한합니다.
+        /// </summary>
+        private void ClampPan()
         {
-            // 캔버스 자체의 중심 (0,0 에서 Width/2, Height/2 만큼 떨어진 곳)
-            Point canvasCenter = new Point(WaferMapCanvas.ActualWidth / 2, WaferMapCanvas.ActualHeight / 2);
-            // 이 중심점을 현재 Transform을 적용하여 부모(UserControl) 좌표계로 변환
-            return WaferMapCanvas.TranslatePoint(canvasCenter, this);
+            double W = WaferMapCanvas.ActualWidth;
+            double H = WaferMapCanvas.ActualHeight;
+            if (W == 0 || H == 0) return; // 렌더링 전이면 중단
+
+            double sx = _scaleTransform.ScaleX;
+            double sy = _scaleTransform.ScaleY;
+
+            // 1. 줌 배율이 1.0 (100%) 미만이 되지 않도록 강제
+            if (sx < 1.0) sx = 1.0;
+            if (sy < 1.0) sy = 1.0;
+
+            _scaleTransform.ScaleX = sx;
+            _scaleTransform.ScaleY = sy;
+
+            // 2. 줌 배율이 1.0이면 패닝(이동)을 0으로 리셋
+            if (sx == 1.0 && sy == 1.0)
+            {
+                _translateTransform.X = 0.0;
+                _translateTransform.Y = 0.0;
+                return;
+            }
+
+            // 3. 줌 배율이 1.0보다 클 때, 캔버스 경계를 계산하여 패닝 제한
+            Point origin = WaferMapCanvas.RenderTransformOrigin; // (ox, oy) 0-1 범위
+            double ox = origin.X;
+            double oy = origin.Y;
+
+            // 캔버스 경계 계산 (자세한 유도 과정은 생략)
+            // MaxTx: 캔버스 왼쪽 경계가 뷰포트 왼쪽 경계를 넘지 않게 (양수)
+            double maxTx = W * ox * (sx - 1);
+            // MinTx: 캔버스 오른쪽 경계가 뷰포트 오른쪽 경계를 넘지 않게 (음수)
+            double minTx = W * (ox - 1) * (sx - 1);
+
+            // MaxTy: 캔버스 위쪽 경계가 뷰포트 위쪽 경계를 넘지 않게 (양수)
+            double maxTy = H * oy * (sy - 1);
+            // MinTy: 캔버스 아래쪽 경계가 뷰포트 아래쪽 경계를 넘지 않게 (음수)
+            double minTy = H * (oy - 1) * (sy - 1);
+
+            // 현재 이동 값이 경계를 넘으면 경계 값으로 강제 설정
+            if (_translateTransform.X > maxTx) _translateTransform.X = maxTx;
+            if (_translateTransform.X < minTx) _translateTransform.X = minTx;
+
+            if (_translateTransform.Y > maxTy) _translateTransform.Y = maxTy;
+            if (_translateTransform.Y < minTy) _translateTransform.Y = minTy;
         }
 
 
-        // ⭐️ 휠 줌
+        // 휠 줌 (수정 없음)
         private void WaferMapCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             double factor = e.Delta > 0 ? 1.2 : (1 / 1.2);
-            // ⭐️ DoZoom에 전달하는 중심점은 캔버스 내부 좌표여야 함
             DoZoom(factor, e.GetPosition(WaferMapCanvas));
             e.Handled = true;
         }
 
-        // ⭐️ LMB (왼쪽 버튼) = 클릭 전용
+        // LMB (클릭) (수정 없음)
         private void WaferMapCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var vm = DataContext as WaferViewModel;
             if (vm == null || vm.Dies == null || !vm.Dies.Any()) return;
 
-            // 1. Die (Rectangle)을 클릭한 경우
             if (e.OriginalSource is Rectangle rect && rect.Tag is DieViewModel die)
             {
                 vm.SelectedDie = die;
             }
-            // 2. 빈 캔버스(Canvas)를 클릭한 경우
             else if (e.OriginalSource is Canvas)
             {
-                vm.SelectedDie = null; // 선택 해제
+                vm.SelectedDie = null;
             }
             e.Handled = true;
         }
 
-        // ⭐️ LMB UP
+        // LMB UP (수정 없음)
         private void WaferMapCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            // LMB는 클릭 전용이므로 Up 이벤트에서 특별히 할 일 없음
-            // (혹시 모를 마우스 캡쳐 해제)
-            if (WaferMapCanvas.IsMouseCaptured && _panStartPoint == null) // 패닝 중이 아닐 때만
+            if (WaferMapCanvas.IsMouseCaptured && _panStartPoint == null)
             {
                 WaferMapCanvas.ReleaseMouseCapture();
                 WaferMapCanvas.Cursor = Cursors.Arrow;
@@ -153,17 +204,17 @@ namespace KlarfApplication.View
             e.Handled = true;
         }
 
-        // ⭐️ RMB (오른쪽 버튼) = 패닝 시작
+        // RMB (패닝 시작) (수정 없음)
         private void WaferMapCanvas_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            // Die든 캔버스든 상관없이 패닝 시작
             _panStartPoint = e.GetPosition(this); // UserControl 기준
             WaferMapCanvas.CaptureMouse();
             WaferMapCanvas.Cursor = Cursors.Hand;
             e.Handled = true;
         }
 
-        // ⭐️ 마우스 이동 (RMB가 눌렸을 때만 패닝)
+        // ⭐️ [수정됨 - Goal 2]
+        // 마우스 이동 (패닝 시 경계 검사 추가)
         private void WaferMapCanvas_MouseMove(object sender, MouseEventArgs e)
         {
             if (_panStartPoint.HasValue && e.RightButton == MouseButtonState.Pressed)
@@ -173,14 +224,16 @@ namespace KlarfApplication.View
                 _translateTransform.X += delta.X;
                 _translateTransform.Y += delta.Y;
                 _panStartPoint = currentPoint;
+
+                // ⭐️ [추가됨 - Goal 2] 패닝 직후 경계 검사
+                ClampPan();
             }
         }
 
-        // ⭐️ RMB UP = 패닝 종료
+        // RMB UP (패닝 종료) (수정 없음)
         private void WaferMapCanvas_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             _panStartPoint = null;
-            // ⭐️ 마우스 캡쳐 해제 조건 추가 (다른 버튼 누른 상태 아닐 때)
             if (WaferMapCanvas.IsMouseCaptured && e.LeftButton != MouseButtonState.Pressed)
             {
                 WaferMapCanvas.ReleaseMouseCapture();
@@ -190,7 +243,8 @@ namespace KlarfApplication.View
         }
         #endregion
 
-        #region DrawWaferMap
+        #region DrawWaferMap (수정 없음)
+        // (기존 DrawWaferMap 메서드 코드는 변경할 필요가 없습니다. 그대로 두세요.)
         private void DrawWaferMap()
         {
             WaferMapCanvas.Children.Clear();
@@ -199,15 +253,12 @@ namespace KlarfApplication.View
             if (!(DataContext is WaferViewModel viewModel) || viewModel.Dies == null || !viewModel.Dies.Any())
                 return;
 
-            // ⭐️ [수정] 고정 크기 대신 캔버스의 '실제' 크기 사용
             double canvasWidth = WaferMapCanvas.ActualWidth;
             double canvasHeight = WaferMapCanvas.ActualHeight;
 
-            // 캔버스가 렌더링되기 전(크기가 0)이면 그리기 중단
             if (canvasWidth == 0 || canvasHeight == 0)
                 return;
 
-            // --- 좌표 계산 준비 ---
             var minRow = viewModel.Dies.Min(d => d.Row);
             var maxRow = viewModel.Dies.Max(d => d.Row);
             var minCol = viewModel.Dies.Min(d => d.Column);
@@ -219,39 +270,29 @@ namespace KlarfApplication.View
             double dieActualWidth = viewModel.Wafer?.DieWidth ?? 1.0;
             double dieActualHeight = viewModel.Wafer?.DieHeight ?? 1.0;
 
-            // 0으로 나누기 방지
             if (dieActualWidth == 0) dieActualWidth = 1.0;
             if (dieActualHeight == 0) dieActualHeight = 1.0;
-            // ⭐️ numRows, numCols 0 방지 추가
             if (numRows == 0) numRows = 1;
             if (numCols == 0) numCols = 1;
 
 
-            // ⭐️ [수정] 캔버스 실제 크기에 맞게 렌더링 크기 계산
             double dieRenderWidth = canvasWidth / numRows * 0.95;
             double dieRenderHeight = canvasHeight / numCols * 0.95;
 
-            // ⭐️ [수정] 가로/세로 비율을 유지하도록 렌더링 크기 재조정
             double aspectRatioActual = dieActualWidth / dieActualHeight;
-            // ⭐️ 0으로 나누기 방지 추가
-            if (dieRenderHeight == 0) dieRenderHeight = 0.001; // 아주 작은 값으로 대체
+            if (dieRenderHeight == 0) dieRenderHeight = 0.001;
             double aspectRatioRender = dieRenderWidth / dieRenderHeight;
 
 
-            if (aspectRatioRender > aspectRatioActual) // 렌더링이 실제보다 '넓적'하면
+            if (aspectRatioRender > aspectRatioActual)
             {
-                // ⭐️ 0으로 나누기 방지 추가
-                // aspect ratio가 0이면 (폭이나 높이가 0이면) 비율 유지 불가능 -> 근사치 사용
                 if (aspectRatioActual > 0)
-                    dieRenderWidth = dieRenderHeight * aspectRatioActual; // 높이에 너비를 맞춤
-                // else dieRenderWidth = dieRenderHeight; //비율이 0이면 정사각형으로 처리 (주석 처리 - 불필요)
+                    dieRenderWidth = dieRenderHeight * aspectRatioActual;
             }
-            else // 렌더링이 실제보다 '길쭉'하거나 비율이 같으면
+            else
             {
-                // ⭐️ 0으로 나누기 방지 추가
                 if (aspectRatioActual > 0)
-                    dieRenderHeight = dieRenderWidth / aspectRatioActual; // 너비에 높이를 맞춤
-                // else dieRenderHeight = dieRenderWidth; //비율이 0이면 정사각형으로 처리 (주석 처리 - 불필요)
+                    dieRenderHeight = dieRenderWidth / aspectRatioActual;
             }
 
 
@@ -262,10 +303,8 @@ namespace KlarfApplication.View
             double offsetX = (canvasWidth - totalMapWidth) / 2;
             double offsetY = (canvasHeight - totalMapHeight) / 2;
 
-            // --- Die 및 Defect 그리기 ---
             foreach (var die in viewModel.Dies)
             {
-                // 1. Die 사각형 위치 계산
                 double left, top;
                 double xIndex = die.Row - minRow;
                 double yIndex = die.Column - minCol;
@@ -281,7 +320,6 @@ namespace KlarfApplication.View
                     top = (numCols - 1 - yIndex) * (dieRenderHeight / 0.95) + offsetY;
                 }
 
-                // 2. Die 사각형 생성
                 Brush fillBrush = die.IsGood ? Brushes.DarkGray : new SolidColorBrush(Color.FromRgb(0xE3, 0x04, 0x13));
                 var rect = new Rectangle
                 {
@@ -300,22 +338,17 @@ namespace KlarfApplication.View
                 rect.MouseLeave += Die_MouseLeave;
 
                 WaferMapCanvas.Children.Add(rect);
-                // ⭐️ NullReferenceException 방지
                 if (die.Key != null)
                     _dieRectangles[die.Key] = rect;
 
 
-                // 3. 해당 Die의 Defect 그리기
-                // ⭐️ [수정] viewModel.AllDefects 사용 (사용자 코드)
                 if (!die.IsGood && viewModel.AllDefects != null)
                 {
                     var defectsInDie = viewModel.AllDefects.Where(def => def.Row == die.Row && def.Column == die.Column);
                     foreach (var defect in defectsInDie)
                     {
-                        // ⭐️ 0으로 나누기 방지
                         if (dieActualWidth == 0 || dieActualHeight == 0) continue;
 
-                        // --- ✨ Defect 좌표 계산 로직 (사용자 코드) ---
                         double defectCanvasX = left + (defect.XCoord / dieActualWidth) * dieRenderWidth;
                         double defectCanvasY;
 
@@ -327,15 +360,12 @@ namespace KlarfApplication.View
                         {
                             defectCanvasY = (top + dieRenderHeight) - (defect.YCoord / dieActualHeight) * dieRenderHeight;
                         }
-                        // --- ✨ 수정 끝 ---
 
                         var defectMarker = new Ellipse
                         {
-                            // ⭐️ [수정] 점 크기를 4에서 2로 변경
                             Width = 2,
                             Height = 2,
                             Fill = Brushes.Yellow,
-                            // ⭐️ [수정] 줌 배율에 관계없이 크기 고정
                             RenderTransform = new ScaleTransform(1.0 / _scaleTransform.ScaleX, 1.0 / _scaleTransform.ScaleY),
                             RenderTransformOrigin = new Point(0.5, 0.5)
                         };
@@ -350,7 +380,7 @@ namespace KlarfApplication.View
         }
         #endregion
 
-        #region Die 하이라이트
+        #region Die 하이라이트 (수정 없음)
         private void Die_MouseEnter(object sender, MouseEventArgs e)
         {
             if (sender is Rectangle rect)
@@ -370,4 +400,3 @@ namespace KlarfApplication.View
         #endregion
     }
 }
-
