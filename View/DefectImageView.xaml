@@ -18,6 +18,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
+            <!-- 상단 헤더 -->
             <Border Grid.Row="0" Background="#73009C" Padding="8,5">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="🔍 Defect Image Viewer"
@@ -33,6 +34,7 @@
                 </StackPanel>
             </Border>
 
+            <!-- 이미지 표시 영역 -->
             <Border Grid.Row="1" Background="#FF1E1E1E">
                 <Grid>
                     <ScrollViewer HorizontalScrollBarVisibility="Auto"
@@ -54,7 +56,6 @@
                                    RenderOptions.BitmapScalingMode="HighQuality"/>
 
                             <Canvas x:Name="DrawingCanvas" />
-
                         </Grid>
                     </ScrollViewer>
 
@@ -67,6 +68,7 @@
                 </Grid>
             </Border>
 
+            <!-- 하단 컨트롤 패널 -->
             <Border Grid.Row="2" Background="#FF2D2D30" Padding="10,8">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -76,55 +78,115 @@
                         <RowDefinition Height="5"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
+
+                    <!-- 줌 컨트롤 -->
                     <Grid Grid.Row="0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
+
                         <StackPanel Grid.Column="0" Orientation="Horizontal">
-                            <Button Content="➕" Style="{StaticResource ToolButtonStyle}" Command="{Binding ZoomInCommand}" ToolTip="Zoom In (Ctrl++)" Background="Transparent" Foreground ="LightGray" BorderBrush="Transparent" BorderThickness="0"/>
-                            <Button Content="➖" Style="{StaticResource ToolButtonStyle}" Command="{Binding ZoomOutCommand}" ToolTip="Zoom Out (Ctrl+-)" Background="Transparent" Foreground ="LightGray" BorderBrush="Transparent" BorderThickness="0"/>
-                            <Button Content="🔃" Style="{StaticResource ToolButtonStyle}" Command="{Binding ResetViewCommand}" ToolTip="Reset View (Ctrl+0)" Background="Transparent" Foreground ="LightGray" BorderBrush="Transparent" BorderThickness="0"/>
-                            <Button Content="🔛" Style="{StaticResource ToolButtonStyle}" Command="{Binding FitToWindowCommand}" ToolTip="Fit to Window" Background="Transparent" Foreground ="LightGray" BorderBrush="Transparent" BorderThickness="0"/>
+                            <Button Content="➕"
+                                    Style="{StaticResource ToolButtonStyle}"
+                                    Command="{Binding ZoomInCommand}"
+                                    ToolTip="Zoom In (Ctrl++)"
+                                    Background="Transparent"
+                                    Foreground="LightGray"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="0"/>
+                            <Button Content="➖"
+                                    Style="{StaticResource ToolButtonStyle}"
+                                    Command="{Binding ZoomOutCommand}"
+                                    ToolTip="Zoom Out (Ctrl+-)"
+                                    Background="Transparent"
+                                    Foreground="LightGray"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="0"/>
+                            <Button Content="🔃"
+                                    Style="{StaticResource ToolButtonStyle}"
+                                    Command="{Binding ResetViewCommand}"
+                                    ToolTip="Reset View (Ctrl+0)"
+                                    Background="Transparent"
+                                    Foreground="LightGray"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="0"/>
+                            <Button Content="🔛"
+                                    Style="{StaticResource ToolButtonStyle}"
+                                    Command="{Binding FitToWindowCommand}"
+                                    ToolTip="Fit to Window"
+                                    Background="Transparent"
+                                    Foreground="LightGray"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="0"/>
                         </StackPanel>
+
                         <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                             <TextBlock Text="Zoom:" Foreground="White" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                            <TextBlock Text="{Binding ZoomLevel, StringFormat={}{0:F0}%}" Foreground="Cyan" VerticalAlignment="Center" FontWeight="Bold" MinWidth="50"/>
+                            <TextBlock Text="{Binding ZoomLevel, StringFormat={}{0:F0}%}"
+                                       Foreground="Cyan"
+                                       VerticalAlignment="Center"
+                                       FontWeight="Bold"
+                                       MinWidth="50"/>
                         </StackPanel>
                     </Grid>
+
+                    <!-- 밝기 슬라이더 -->
                     <Grid Grid.Row="2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="90"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="50"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="Brightness:" Foreground="White" VerticalAlignment="Center"/>
+
+                        <TextBlock Grid.Column="0"
+                                   Text="Brightness:"
+                                   Foreground="White"
+                                   VerticalAlignment="Center"/>
+
                         <Slider Grid.Column="1"
                                 x:Name="BrightnessSlider"
-                                Minimum="-100" Maximum="100" Value="0"
-                                TickFrequency="10" IsSnapToTickEnabled="True"
+                                Minimum="-100"
+                                Maximum="100"
+                                TickFrequency="10"
+                                IsSnapToTickEnabled="True"
                                 VerticalAlignment="Center"
-                                ValueChanged="BrightnessSlider_ValueChanged"/>
+                                Value="{Binding Brightness, Mode=TwoWay}"/>
+
                         <TextBlock Grid.Column="2"
-                                   Text="{Binding ElementName=BrightnessSlider, Path=Value, StringFormat={}{0:F0}}"
-                                   Foreground="White" VerticalAlignment="Center" TextAlignment="Right"/>
+                                   Text="{Binding Brightness, StringFormat={}{0:F0}}"
+                                   Foreground="White"
+                                   VerticalAlignment="Center"
+                                   TextAlignment="Right"/>
                     </Grid>
+
+                    <!-- 명암 슬라이더 -->
                     <Grid Grid.Row="4">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="90"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="50"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="Contrast:" Foreground="White" VerticalAlignment="Center"/>
+
+                        <TextBlock Grid.Column="0"
+                                   Text="Contrast:"
+                                   Foreground="White"
+                                   VerticalAlignment="Center"/>
+
                         <Slider Grid.Column="1"
                                 x:Name="ContrastSlider"
-                                Minimum="-100" Maximum="100" Value="0"
-                                TickFrequency="10" IsSnapToTickEnabled="True"
+                                Minimum="-100"
+                                Maximum="100"
+                                TickFrequency="10"
+                                IsSnapToTickEnabled="True"
                                 VerticalAlignment="Center"
-                                ValueChanged="ContrastSlider_ValueChanged"/>
+                                Value="{Binding Contrast, Mode=TwoWay}"/>
+
                         <TextBlock Grid.Column="2"
-                                   Text="{Binding ElementName=ContrastSlider, Path=Value, StringFormat={}{0:F0}}"
-                                   Foreground="White" VerticalAlignment="Center" TextAlignment="Right"/>
+                                   Text="{Binding Contrast, StringFormat={}{0:F0}}"
+                                   Foreground="White"
+                                   VerticalAlignment="Center"
+                                   TextAlignment="Right"/>
                     </Grid>
                 </Grid>
             </Border>

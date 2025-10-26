@@ -17,9 +17,9 @@ namespace KlarfApplication.View
         private readonly TranslateTransform _translateTransform = new TranslateTransform();
         private Point? _panStartPoint = null; // ⭐️ LMB (패닝)
 
-        // 밝기/대비를 위한 변수
-        private BitmapSource _originalBitmap;
-        private bool _isProcessing = false;
+        // ⭐️ [삭제] 밝기/대비 관련 필드 제거
+        // private BitmapSource _originalBitmap;
+        // private bool _isProcessing = false;
 
         // ⭐️ RMB (측정)
         private Point? _measurementStartPoint = null;
@@ -57,7 +57,7 @@ namespace KlarfApplication.View
                 newVm.FitToWindowRequested += OnFitToWindowRequested;
                 newVm.ZoomInRequested += OnZoomInRequested;
                 newVm.ZoomOutRequested += OnZoomOutRequested;
-                LoadOriginalImage(newVm.DefectImage);
+                LoadOriginalImage(newVm.DefectImage); // ⭐️ VM의 DefectImage가 변경되면 LoadOriginalImage 호출
             }
         }
 
@@ -66,21 +66,37 @@ namespace KlarfApplication.View
             if (e.PropertyName == nameof(DefectImageViewModel.DefectImage))
             {
                 var viewModel = DataContext as DefectImageViewModel;
-                LoadOriginalImage(viewModel?.DefectImage);
+
+                // ⭐️ VM에서 이미 효과가 적용된 이미지를 전달하므로,
+                //    DefectImage.Source에 바로 할당합니다.
+                DefectImage.Source = viewModel?.DefectImage;
+
+                // ⭐️ VM의 DefectImage가 null일 때(이미지 클리어 시) 측정 도구를 정리합니다.
+                if (viewModel?.DefectImage == null)
+                {
+                    DrawingCanvas.Children.Clear();
+                    _ruler = null;
+                    _rulerText = null;
+                }
             }
         }
 
         private void LoadOriginalImage(BitmapSource image)
         {
-            _originalBitmap = image;
+            // ⭐️ [삭제] _originalBitmap = image;
+
+            // ⭐️ [수정] 뷰 리셋 및 슬라이더 초기화 관련 코드 모두 삭제
+            //    (VM이 Brightness/Contrast를 0으로 설정 -> XAML이 바인딩)
             OnFitToWindowRequested();
-            BrightnessSlider.ValueChanged -= BrightnessSlider_ValueChanged;
-            ContrastSlider.ValueChanged -= ContrastSlider_ValueChanged;
-            BrightnessSlider.Value = 0;
-            ContrastSlider.Value = 0;
-            BrightnessSlider.ValueChanged += BrightnessSlider_ValueChanged;
-            ContrastSlider.ValueChanged += ContrastSlider_ValueChanged;
-            DefectImage.Source = _originalBitmap;
+            // ⭐️ [삭제] BrightnessSlider.ValueChanged -= ...
+            // ⭐️ [삭제] ContrastSlider.ValueChanged -= ...
+            // ⭐️ [삭제] BrightnessSlider.Value = 0;
+            // ⭐️ [삭제] ContrastSlider.Value = 0;
+            // ⭐️ [삭제] BrightnessSlider.ValueChanged += ...
+            // ⭐️ [삭제] ContrastSlider.ValueChanged += ...
+
+            DefectImage.Source = image; // ⭐️ VM에서 받은 이미지로 설정
+
             DrawingCanvas.Children.Clear();
             _ruler = null;
             _rulerText = null;
@@ -89,7 +105,14 @@ namespace KlarfApplication.View
 
         #region 버튼 Command / 줌 로직
 
-        private void OnResetViewRequested() { LoadOriginalImage(_originalBitmap); }
+        // ⭐️ [수정] 
+        // 이 핸들러는 VM의 ResetViewCommand -> ResetViewRequested 이벤트에 의해 호출됩니다.
+        // VM은 밝기/대비를 리셋하고, 이 핸들러는 줌/패닝(View)을 리셋합니다.
+        private void OnResetViewRequested()
+        {
+            // ⭐️ [삭제] LoadOriginalImage(_originalBitmap);
+            OnFitToWindowRequested(); // ⭐️ 줌/패닝만 리셋
+        }
 
         private void OnFitToWindowRequested()
         {
@@ -104,7 +127,8 @@ namespace KlarfApplication.View
 
         private void DoZoom(double zoomFactor)
         {
-            if (_originalBitmap == null) return;
+            // ⭐️ [수정] _originalBitmap 대신 DefectImage.Source로 확인
+            if (DefectImage.Source == null) return;
             ImageGrid.RenderTransformOrigin = new Point(0.5, 0.5);
 
             double newScaleX = _scaleTransform.ScaleX * zoomFactor;
@@ -129,7 +153,8 @@ namespace KlarfApplication.View
         // (공통) 휠 줌
         private void ImageGrid_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (_originalBitmap == null) return;
+            // ⭐️ [수정] _originalBitmap 대신 DefectImage.Source로 확인
+            if (DefectImage.Source == null) return;
             double zoomFactor = e.Delta > 0 ? 1.2 : (1 / 1.2);
             Point mousePos = e.GetPosition(ImageGrid);
             ImageGrid.RenderTransformOrigin = new Point(
@@ -139,10 +164,9 @@ namespace KlarfApplication.View
             double newScaleX = _scaleTransform.ScaleX * zoomFactor;
             double newScaleY = _scaleTransform.ScaleY * zoomFactor;
 
-            // 최대 줌: 300% (3배), 최소 줌: 100% (1배)
+            // (줌 제한 로직은 동일)
             const double MAX_ZOOM = 3.0;
             const double MIN_ZOOM = 1.0;
-
             if (newScaleX > MAX_ZOOM) newScaleX = MAX_ZOOM;
             if (newScaleX < MIN_ZOOM) newScaleX = MIN_ZOOM;
             if (newScaleY > MAX_ZOOM) newScaleY = MAX_ZOOM;
@@ -165,8 +189,8 @@ namespace KlarfApplication.View
             }
             // --- 측정선 지우기 끝 ---
 
-            // 기존 패닝 시작 로직
-            if (_originalBitmap == null || _measurementStartPoint.HasValue) return; // 측정 중일 땐 패닝 안 함
+            // ⭐️ [수정] _originalBitmap 대신 DefectImage.Source로 확인
+            if (DefectImage.Source == null || _measurementStartPoint.HasValue) return; // 측정 중일 땐 패닝 안 함
             _panStartPoint = e.GetPosition(ImageScrollViewer);
             ImageGrid.CaptureMouse();
             ImageGrid.Cursor = Cursors.Hand;
@@ -176,7 +200,8 @@ namespace KlarfApplication.View
         // RMB (측정 시작)
         private void ImageGrid_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (_originalBitmap == null || _panStartPoint.HasValue) return;
+            // ⭐️ [수정] _originalBitmap 대신 DefectImage.Source로 확인
+            if (DefectImage.Source == null || _panStartPoint.HasValue) return;
             e.Handled = true;
 
             DrawingCanvas.Children.Clear();
@@ -272,56 +297,13 @@ namespace KlarfApplication.View
         }
         #endregion
 
-        #region 밝기 / 대비
-        // (밝기/대비 로직은 변경 없음)
-        private void BrightnessSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) { ApplyEffects(); }
-        private void ContrastSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) { ApplyEffects(); }
-        private void ApplyEffects()
-        {
-            if (_originalBitmap == null || _isProcessing) return;
-            _isProcessing = true;
-            try
-            {
-                double brightness = BrightnessSlider.Value;
-                double contrast = ContrastSlider.Value;
-                FormatConvertedBitmap formattedBitmap = new FormatConvertedBitmap(_originalBitmap, PixelFormats.Bgra32, null, 0);
-                WriteableBitmap wBitmap = new WriteableBitmap(formattedBitmap);
-                int width = wBitmap.PixelWidth; int height = wBitmap.PixelHeight; int stride = wBitmap.BackBufferStride;
-                byte[] pixels = new byte[height * stride];
-                wBitmap.CopyPixels(pixels, stride, 0);
-                double contrastFactor = (100.0 + contrast) / 100.0;
-                contrastFactor *= contrastFactor;
-                for (int y = 0; y < height; y++)
-                {
-                    for (int x = 0; x < width; x++)
-                    {
-                        int index = y * stride + x * 4;
-                        byte b = pixels[index]; byte g = pixels[index + 1]; byte r = pixels[index + 2];
-                        double newB = ((b / 255.0 - 0.5) * contrastFactor + 0.5) * 255.0;
-                        double newG = ((g / 255.0 - 0.5) * contrastFactor + 0.5) * 255.0;
-                        double newR = ((r / 255.0 - 0.5) * contrastFactor + 0.5) * 255.0;
-                        newB += brightness; newG += brightness; newR += brightness;
-                        pixels[index] = Clamp(newB);
-                        pixels[index + 1] = Clamp(newG);
-                        pixels[index + 2] = Clamp(newR);
-                    }
-                }
-                wBitmap.WritePixels(new Int32Rect(0, 0, width, height), pixels, stride, 0);
-                DefectImage.Source = wBitmap;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"ApplyEffects Error: {ex.Message}");
-                DefectImage.Source = _originalBitmap;
-            }
-            finally { _isProcessing = false; }
-        }
-        private byte Clamp(double value)
-        {
-            if (value < 0) return 0;
-            if (value > 255) return 255;
-            return (byte)value;
-        }
+        // ⭐️ [삭제] 밝기 / 대비 영역 전체 삭제
+        #region 밝기 / 대비 
+        // (이하 모든 메서드 삭제)
+        // private void BrightnessSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) { ApplyEffects(); }
+        // private void ContrastSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) { ApplyEffects(); }
+        // private void ApplyEffects() { ... }
+        // private byte Clamp(double value) { ... }
         #endregion
     }
 }

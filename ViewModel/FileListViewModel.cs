@@ -23,6 +23,7 @@ namespace KlarfApplication.ViewModel
         private KlarfModel _selectedFile;
         private Visibility _noFilesVisibility;
         private string _currentFolderPath;
+        private TreeNodeItem _selectedNode; // ⭐️ [추가]
 
         #endregion
 
@@ -45,6 +46,23 @@ namespace KlarfApplication.ViewModel
             {
                 _selectedFile = value;
                 OnPropertyChanged(nameof(SelectedFile));
+            }
+        }
+
+        // ⭐️ [추가] TreeView의 SelectedItem에 대응하는 프로퍼티
+        public TreeNodeItem SelectedNode
+        {
+            get => _selectedNode;
+            set
+            {
+                if (_selectedNode != value)
+                {
+                    _selectedNode = value;
+                    OnPropertyChanged(nameof(SelectedNode));
+
+                    // ⭐️ FileListView.xaml.cs에서 이동해 온 로직
+                    HandleNodeSelection(value);
+                }
             }
         }
 
@@ -97,9 +115,37 @@ namespace KlarfApplication.ViewModel
 
         #region Private Methods
 
-        /// <summary>
-        /// (Klarf용) 폴더 선택하고 안의 파일들 있으면 트리 구조로 보여주기
-        /// </summary>
+        // ⭐️ [추가] 선택 처리 로직
+        private void HandleNodeSelection(TreeNodeItem node)
+        {
+            if (node == null)
+            {
+                SelectedFile = null;
+                return;
+            }
+
+            // KLARF 파일이면 SelectedFile에 설정
+            if (node.Tag is KlarfApplication.Model.KlarfModel klarf)
+            {
+                SelectedFile = klarf;
+            }
+            // KLARF 파일이 아닌 다른 '파일' 노드(이미지 파일 포함)를 클릭한 경우
+            else if (node.NodeType == TreeNodeType.File || node.NodeType == TreeNodeType.ImageFile)
+            {
+                // 경고창 표시 (더 나은 MVVM 방식은 MainViewModel에 상태 메시지를 보내는 것입니다)
+                MessageBox.Show("선택한 파일은 KLARF 파일이 아닙니다.", "파일 형식 오류",
+                                MessageBoxButton.OK, MessageBoxImage.Warning);
+
+                // 선택 클리어 (MainViewModel이 감지하여 다른 뷰들도 초기화)
+                // SelectedFile = null; // (정책에 따라 주석 처리 혹은 해제)
+            }
+            // 폴더나 정보 노드를 클릭한 경우
+            else
+            {
+                // 선택 클리어
+                // SelectedFile = null; // (정책에 따라 주석 처리 혹은 해제)
+            }
+        }
         private void OpenFolder()
         {
             var dialog = new CommonOpenFileDialog
