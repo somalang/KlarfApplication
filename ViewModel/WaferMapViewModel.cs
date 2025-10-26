@@ -69,6 +69,10 @@ namespace KlarfApplication.ViewModel
         public event Action ZoomInRequested;
         public event Action ZoomOutRequested;
         public event Action ResetViewRequested;
+
+        // ⭐️ --- [추가 시작] ---
+        public ICommand SelectDieCommand { get; }
+        // ⭐️ --- [추가 끝] ---
         #endregion
 
         public WaferViewModel() // 생성자
@@ -80,8 +84,22 @@ namespace KlarfApplication.ViewModel
             ZoomOutCommand = new RelayCommand(() => ZoomOutRequested?.Invoke());
             ResetViewCommand = new RelayCommand(() => ResetViewRequested?.Invoke());
             FitToWindowCommand = new RelayCommand(() => ResetViewRequested?.Invoke()); // Fit도 Reset 호출
+
+            // ⭐️ --- [수정] ---
+            // 파라미터를 받는 Action<object> 생성자를 사용
+            SelectDieCommand = new RelayCommand(SelectDie);
+            // ⭐️ --- [수정 끝] ---
         }
-        // ⭐️ --- [줌 Command 및 이벤트 추가 끝] ---
+
+        // ⭐️ --- [추가 시작] ---
+        /// <summary>
+        /// SelectDieCommand가 실행할 메서드.
+        /// </summary>
+        private void SelectDie(object parameter)
+        {
+            SelectedDie = parameter as DieViewModel;
+        }
+        // ⭐️ --- [추가 끝] ---
 
 
         public void UpdateFromKlarf(KlarfModel klarf)
